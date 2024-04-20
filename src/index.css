@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap");
+/* Custom styling for checked state */
+input[type="checkbox"]:checked {
+  /* Example: Change the background color and border color when checked */
+  background-color: #10b981; /* Tailwind's emerald-500 */
+  border-color: #047857; /* Tailwind's emerald-700 */
+}
