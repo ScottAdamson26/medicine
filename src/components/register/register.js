@@ -38,7 +38,7 @@ function Register() {
       await createUserWithEmailAndPassword(auth, email, password);
       setIsRegistering(false);
       setRegistrationSuccess(true);
-      setTimeout(() => navigate("/sign-in"), 3000);  // Delay redirection to show success message
+      setTimeout(() => navigate("/sign-in"), 3000);  // Delay redirection to show success message push
     } catch (error) {
       console.error(error.message);
       setIsRegistering(false);
