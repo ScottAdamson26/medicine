@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from './././AuthContext';
+import { useAuth } from '../../AuthContext';
 
 function SubscriptionSuccess() {
   const navigate = useNavigate();

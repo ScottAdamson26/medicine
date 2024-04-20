@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useAuth } from './././AuthContext';
+import { useAuth } from '../../AuthContext';
 
 const Settings = () => {
   const { stripeId } = useAuth();  // Destructure to get stripeId from context
