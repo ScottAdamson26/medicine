@@ -5,7 +5,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import Lottie from "react-lottie";
 import spinnerAnimation from "./spinner.json"; // Ensure this path is correct
 import Google from "./google.webp";
-import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { useAuth } from 'C:/Users/scott/Documents/med/src/AuthContext.js'; // Adjust the path according to your project structure
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
@@ -59,25 +59,8 @@ const SignIn = () => {
       console.log("Current Stripe ID:", stripeId);
     }
   }, [currentUser, stripeId]);  
-const checkSubscription = async (userId) => {
-    const subsRef = collection(db, `users/${userId}/subscriptions`);
-    const q = query(subsRef, where("status", "==", "active"));
-    try {
-        const querySnapshot = await getDocs(q);
-        console.log("Subscriptions fetched:", querySnapshot.docs.map(doc => doc.data()));
-        let hasActiveSubscription = querySnapshot.docs.some(doc => doc.exists());
 
-        if (hasActiveSubscription) {
-            setCurrentUser(auth.currentUser);
-            navigate("/home");
-        } else {
-            console.log("No active subscription found");
-            navigate("/pricing", { replace: true });
-        }
-    } catch (error) {
-        console.error("Failed to fetch subscriptions:", error);
-    }
-};
+
 
 
   return (
@@ -115,7 +98,7 @@ const checkSubscription = async (userId) => {
             <FontAwesomeIcon
               icon={faEye}
               onClick={togglePasswordVisibility}
-              className={`absolute inset-y-0 right-3 my-auto text-gray-400 opacity-40 hover:text-gray-600 cursor-pointer ${showPassword ? 'text-gray-600' : 'text-gray-400'}`}
+              className={`absolute inset-y-0 right-3 my-auto text-gray-400 opacity-40 hover:text-gray-600 h cursor-pointer ${showPassword ? 'text-gray-600' : 'text-gray-400'}`}
             />
             {signInError && <p className="text-red-500 text-xs italic mt-2">{signInError}</p>}
           </div>

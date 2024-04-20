@@ -11,8 +11,7 @@ const Quiz = () => {
     false,
     false,
   ]);
-
-  const [question, setQuestion] = useState({
+const question = useState({
     text: 'A 65-year-old man is being treated for sepsis following a chest infection. He calls you over with a nosebleed and you notice big bruises over his arms where his blood was taken earlier. You believe he is suffering from disseminated intravascular coagulation. A set of blood tests are sent.',
     prompt: 'Which of the following results would best fit with this diagnosis?',
     answers: [

@@ -1,6 +1,5 @@
 import React from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
 function CheckoutForm() {

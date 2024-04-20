@@ -41,7 +41,7 @@ function Timer() {
         } else {
           if (sessionsCompleted + 1 >= sessionsCount) {
             setIsActive(false);
-            setAllSessionsComplete(true); // Indicate all sessions are complete
+            setAllSessionsComplete(true); // Indicate all sessions are complete push
             setTimeLeft(sessionTime); // No need to reset here for now
           } else {
             setIsSession(true);

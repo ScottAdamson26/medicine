@@ -15,7 +15,6 @@ import CheckoutForm from './components/register/CheckoutForm';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import SubscriptionSuccess from './components/register/SubscriptionSuccess';
-import Loader from "./components/Loader";
 
 const stripePromise = loadStripe('your_stripe_public_key');
 
