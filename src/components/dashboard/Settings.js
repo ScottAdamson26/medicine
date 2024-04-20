@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { useAuth } from 'C:/Users/scott/Documents/med/src/AuthContext.js';  // Correct the path according to your project structure
+import { useAuth } from '../../../AuthContext';
 
 const Settings = () => {
   const { stripeId } = useAuth();  // Destructure to get stripeId from context

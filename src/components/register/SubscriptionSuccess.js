@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from 'C:/Users/scott/Documents/med/src/AuthContext.js'; // Adjust the path according to your project structure
+import { useAuth } from '../../../AuthContext';
 
 function SubscriptionSuccess() {
   const navigate = useNavigate();
