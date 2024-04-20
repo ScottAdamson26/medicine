@@ -5,7 +5,7 @@ import Welcome from "./Welcome";
 import TopNavigation from "./TopNavigation";
 import Continue from "./Continue";
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db, auth } from "C:/Users/scott/Documents/med/src/firebase-config";
+import { db, auth } from "../../firebase-config";
 import UserNameModal from "./UserNameModal";
 import Timer from "./Timer";
 import Profile from "./Profile";
