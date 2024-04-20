@@ -1,5 +1,5 @@
 import React from "react";
-import { useAuth } from 'C:/Users/scott/Documents/med/src/AuthContext.js'; // Make sure the path is correct
+import { useAuth } from './././AuthContext';
 import axios from "axios";
 
 function Pricing() {

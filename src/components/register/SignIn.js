@@ -6,7 +6,7 @@ import Lottie from "react-lottie";
 import spinnerAnimation from "./spinner.json"; // Ensure this path is correct
 import Google from "./google.webp";
 import { doc, getDoc } from 'firebase/firestore';
-import { useAuth } from '../../../AuthContext';
+import { useAuth } from './././AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 const SignIn = () => {
