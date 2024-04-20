@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCirclePlay,
@@ -81,16 +81,21 @@ function Timer() {
     }
   };
 
-  const resetTimer = () => {
+
+  // Inside your component
+  const resetTimer = useCallback(() => {
     setIsActive(false);
     setIsSession(true);
     setSessionStarted(false);
     setSessionsCompleted(0);
     setTimeLeft(sessionTime); // Reset to initial session time
     setAllSessionsComplete(false); // Reset the completion flag
-   
-  };
-
+  }, [sessionTime]); // Include all dependencies here that resetTimer uses
+  
+  useEffect(() => {
+    resetTimer();
+  }, [resetTimer, sessionTime, breakTime, sessionsCount]); // Now resetTimer is stable unless its dependencies change
+  
   function handleSettingsUpdate(
     newSessionTime,
     newBreakTime,
@@ -100,11 +105,10 @@ function Timer() {
     setBreakTime(newBreakTime);
     setSessionsCount(newSessionsCount);
   }
-
   useEffect(() => {
     resetTimer();
    
-  }, [sessionTime, breakTime, sessionsCount]); // React will check for changes in these values.
+  }, [sessionTime, breakTime, sessionsCount, resetTimer]); // React will check for changes in these values.
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
