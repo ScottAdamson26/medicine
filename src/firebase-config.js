@@ -1,4 +1,6 @@
 // Import the functions you need from the SDKs you need
+require('dotenv').config({path: '../env'});
+
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
