@@ -36,10 +36,10 @@ function Pricing() {
     <div className="min-h-screen flex flex-col justify-center items-center bg-white text-zinc-800 p-5">
       <h1 className="text-4xl font-bold mb-5 text-center">Choose a Plan</h1>
       <h2 className="text-xl mb-5 md:mb-12 text-center">
-        Selecting the pricing plan that suits your study needs
+        Select the pricing plan that suits your study needs
       </h2>
 
-      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-7">
+      <div className="w-full  max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-7">
         {/* Tier 1 - Free */}
         <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1 justify-between">
           <div className="bg-white rounded-lg flex flex-col w-full h-full p-8">
@@ -68,7 +68,7 @@ function Pricing() {
             Most Popular
           </div>
           <div className="bg-white rounded-b-lg flex flex-col w-full h-full p-8">
-            <h2 className="text-xl font-bold mb-4">Basic Plan</h2>
+            <h2 className="text-xl font-bold mb-4">Pro Plan</h2>
             <p className="text-gray-600 mb-4">Basic features for revision</p>
             <ul className="mb-4">
               <li>✔ Everything in Free</li>
@@ -84,26 +84,7 @@ function Pricing() {
           </div>
         </div>
        
-        {/* Tier 3 - Premium */}
-        <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1 justify-between">
-          <div className="bg-white rounded-lg flex flex-col w-full h-full p-8">
-            <h2 className="text-xl font-bold mb-4">Premium Plan</h2>
-            <p className="text-gray-600 mb-4">Advanced features</p>
-            <ul className="mb-4">
-              <li>✔ Everything in Basic</li>
-              <li>✔ Feature E</li>
-              <li>✔ Feature F</li>
-            </ul>
-            <button
-              className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium"
-              onClick={() => {
-                window.location.href = "/register";
-              }}
-            >
-              Choose Plan
-            </button>
-          </div>
-        </div>
+        
       </div>
     </div>
   );

@@ -17,8 +17,15 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
-  const { currentUser, stripeId, setCurrentUser, setStripeId } = useAuth();
-
+  const {
+    currentUser,
+    stripeId,
+    setCurrentUser,
+    setStripeId,
+    hasActiveSubscription,
+    setHasActiveSubscription,
+    fetchUserData  // Ensure you destruct this from useAuth
+  } = useAuth();
   
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

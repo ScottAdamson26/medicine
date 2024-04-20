@@ -10,7 +10,7 @@ const Profile = ({ name }) => {
       <h1 className="text-xl font-bold text-zinc-900 mt-4">{name}</h1>
 
       <div className="flex text-sm items-center">
-        <p className="text-zinc-900 opacity-65 mr-2">Basic Plan</p>
+        <p className="text-zinc-900 opacity-65 mr-2">Pro Plan</p>
         <FontAwesomeIcon icon={faBolt} className="text-yellow-400"/>
       </div>
       
