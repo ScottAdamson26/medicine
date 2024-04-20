@@ -14,8 +14,10 @@ function Pricing() {
   }
 
   const handleClick = async (priceId) => {
+    const firebaseFunctionUrl = `https://us-central1-medicine-ba560.cloudfunctions.net/createCheckoutSession`;
+  
     try {
-      const response = await axios.post('http://localhost:4242/create-checkout-session', {
+      const response = await axios.post(firebaseFunctionUrl, {
         priceId,
         stripeCustomerId: stripeId,
       });
@@ -25,6 +27,7 @@ function Pricing() {
       alert("Failed to proceed with payment. Please try again.");
     }
   };
+  
  
   return (
     // Use `min-h-screen` to ensure the div takes up at least the height of the screen
