@@ -1,8 +1,3 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth, db } from "./firebase-config";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -10,23 +5,28 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [stripeId, setStripeId] = useState(null);
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Function to fetch user data with retry logic
   const fetchUserData = async (user) => {
     const userRef = doc(db, "users", user.uid);
     let attempts = 0;
-    const maxAttempts = 5;  // Maximum number of attempts
+    const maxAttempts = 5;
     while (attempts < maxAttempts) {
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists() && userDoc.data().stripeId) {
-            return userDoc.data();  // Return the data once stripeId is available
+      const userDoc = await getDoc(userRef);
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        const subscriptionsRef = doc(db, `users/${user.uid}/subscriptions`, 'subid'); // Assuming 'subid' needs to be replaced with actual subscription ID logic
+        const subscriptionsDoc = await getDoc(subscriptionsRef);
+        if (subscriptionsDoc.exists() && subscriptionsDoc.data().status === "active") {
+          return { ...data, hasActiveSubscription: true };
         }
-        attempts++;
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retrying
+        return { ...data, hasActiveSubscription: false };
+      }
+      attempts++;
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
-    console.error("Failed to retrieve stripeId after several attempts.");
-    return null;  // Return null if the stripeId isn't fetched after retries
+    return null;
   };
 
   useEffect(() => {
@@ -34,17 +34,19 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       if (user) {
         const userData = await fetchUserData(user);
-        if (userData && userData.stripeId) {
+        if (userData) {
           setStripeId(userData.stripeId);
           setCurrentUser(user);
+          setHasActiveSubscription(userData.hasActiveSubscription);
         } else {
-          // If no userData or stripeId could be fetched after retries
           setStripeId(null);
-          setCurrentUser(user);  // Optionally keep the user set even if no stripeId
+          setCurrentUser(user);
+          setHasActiveSubscription(false);
         }
       } else {
         setStripeId(null);
         setCurrentUser(null);
+        setHasActiveSubscription(false);
       }
       setLoading(false);
     });
@@ -53,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, setCurrentUser, stripeId, loading, setStripeId }}>
+    <AuthContext.Provider value={{ currentUser, setCurrentUser, stripeId, setStripeId, hasActiveSubscription, loading }}>
       {children}
     </AuthContext.Provider>
   );

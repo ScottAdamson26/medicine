@@ -30,20 +30,18 @@ const SignIn = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("Authentication successful:", userCredential.user);
-      // Fetch the user document again to ensure stripeId is loaded
-      const userRef = doc(db, "users", userCredential.user.uid);
-      const userDoc = await getDoc(userRef);
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setCurrentUser(userCredential.user);  // Ensure user is set in context
-        setStripeId(userData.stripeId || null); // Make sure stripeId is updated in context
-        if (userData.stripeId) {
+      const userData = await fetchUserData(userCredential.user);
+      if (userData) {
+        setCurrentUser(userCredential.user);
+        setStripeId(userData.stripeId || null);
+        setHasActiveSubscription(userData.hasActiveSubscription);
+        if (userData.hasActiveSubscription) {
           navigate("/home");
         } else {
           navigate("/pricing");
         }
       } else {
-        throw new Error('User document does not exist');
+        throw new Error('Failed to retrieve user data');
       }
     } catch (error) {
       console.error("Authentication or data fetch failed:", error);
