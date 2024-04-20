@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "C:/Users/scott/Documents/med/src/firebase-config";
+import { db } from "../../firebase-config";
 
 const UserNameModal = ({ user, onClose }) => {
     const [name, setName] = useState("");

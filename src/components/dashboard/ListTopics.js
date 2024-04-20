@@ -1,7 +1,7 @@
 // ListTopics.js
 import { useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from "C:/Users/scott/Documents/med/src/firebase-config";
+import { db } from "../../firebase-config";
 
 function ListTopics({ setTopics }) {
     useEffect(() => {
