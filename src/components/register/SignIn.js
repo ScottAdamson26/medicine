@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase-config"; // Ensure this path is correct
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -17,8 +17,6 @@ const SignIn = () => {
 
   const navigate = useNavigate();
   const {
-    currentUser,
-    stripeId,
     setCurrentUser,
     setStripeId,
     setHasActiveSubscription,
