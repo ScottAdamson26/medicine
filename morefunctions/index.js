@@ -28,8 +28,8 @@ exports.createCheckoutSession = functions.https.onRequest((req, res) => {
             quantity: 1
           }],
           mode: "subscription",
-          success_url: `${req.headers.origin}/subscription-success`,
-          cancel_url: `${req.headers.origin}/pricing`
+          success_url: `https://idyllic-tartufo-aec22a.netlify.app/subscription-success`,
+          cancel_url: `https://idyllic-tartufo-aec22a.netlify.app/sign-in`
         });
 
         res.status(200).json({ url: session.url });
