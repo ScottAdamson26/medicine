@@ -28,8 +28,8 @@ exports.createCheckoutSession = functions.https.onRequest((req, res) => {
             quantity: 1
           }],
           mode: "subscription",
-          success_url: "http://localhost:3000/subscription-success",
-          cancel_url: "http://localhost:3000/pricing"
+          success_url: `${req.headers.origin}/subscription-success`,
+          cancel_url: `${req.headers.origin}/pricing`
         });
 
         res.status(200).json({ url: session.url });
@@ -60,7 +60,7 @@ exports.createPortalSession = functions.https.onRequest((req, res) => {
       try {
         const portalSession = await stripe.billingPortal.sessions.create({
           customer: stripeCustomerId,
-          return_url: "http://localhost:3000/home"
+          return_url: `${req.headers.origin}/home`
         });
 
         res.status(200).json({ url: portalSession.url });
