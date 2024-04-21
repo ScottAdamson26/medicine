@@ -56,14 +56,6 @@ const SignIn = () => {
   };
   
 
-  // Check and log the Stripe ID
-  useEffect(() => {
-    if (currentUser) {
-      console.log("Current Stripe ID:", stripeId);
-    }
-  }, [currentUser, stripeId]);  
-
-
 
 
   return (

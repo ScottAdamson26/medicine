@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 
 const UserNameModal = ({ user, onClose }) => {
@@ -7,20 +7,18 @@ const UserNameModal = ({ user, onClose }) => {
   
     const handleSubmit = async (e) => {
       e.preventDefault();
+      const userRef = doc(db, 'users', user.uid);
       try {
-        await setDoc(doc(db, 'users', user.uid), {
-          name: name,
-          email: user.email,
-          createdAt: new Date(),
+        await updateDoc(userRef, {
+          name: name, // Only update the name field
         });
-        console.log("User information saved to Firestore");
+        console.log("User name added to Firestore");
         onClose(name); // Pass the new name back to the Dashboard
       } catch (error) {
-        console.error("Error adding user data: ", error.message);
+        console.error("Error updating user data: ", error.message);
       }
     };
   
-
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex justify-center items-center">
       <div className="bg-gradient-to-r from-blue-300 to-cyan-400 p-1 rounded-xl shadow-xl">

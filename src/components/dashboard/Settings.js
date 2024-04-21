@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useAuth } from '../../AuthContext';
 
 const Settings = () => {
-  const { stripeId } = useAuth();  // Destructure to get stripeId from context
+  const { stripeId, logout } = useAuth();  // Destructure to get stripeId from context
 
   const handleManageSubscription = async () => {
     if (!stripeId) {
@@ -12,7 +12,7 @@ const Settings = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:4242/create-portal-session', { stripeCustomerId: stripeId });
+      const response = await axios.post('https://us-central1-medicine-ba560.cloudfunctions.net/createPortalSession', { stripeCustomerId: stripeId });
       window.location.href = response.data.url;
     } catch (error) {
       console.error('Failed to open Stripe portal:', error);
@@ -21,11 +21,14 @@ const Settings = () => {
   };
 
   return (
-    <div className="w-full rounded-lg shadow-lg p-8 bg-white">
+    <div className="w-full rounded-lg shadow-lg p-8 bg-white mb-4">
       <button onClick={handleManageSubscription} className="group px-4 py-2 text-base font-medium text-cyan-500 rounded-lg bg-cyan-100 transition flex items-center duration-300 ease-in-out hover:bg-cyan-200">
         <span className="transition-transform duration-300 ease-in-out">
           Manage Subscription
         </span>
+      </button>
+      <button onClick={logout} className="mt-4 group px-4 py-2 text-base font-medium text-red-500 rounded-lg bg-red-100 transition flex items-center duration-300 ease-in-out hover:bg-red-200">
+        Log Out
       </button>
     </div>
   );

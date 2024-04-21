@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "./firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, getDocs, collection} from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { signOut } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -12,34 +13,45 @@ export const AuthProvider = ({ children }) => {
   const [stripeId, setStripeId] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  // Inside AuthProvider component
+  
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setCurrentUser(null);
+      setStripeId(null);
+      setHasActiveSubscription(false);
+    } catch (error) {
+      console.error("Error signing out: ", error);
+    }
+  };
+  
   const fetchUserData = async (user) => {
     const userRef = doc(db, "users", user.uid);
-    console.log("Fetching user data for UID:", user.uid);
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       const data = userDoc.data();
       console.log("User data found:", data);
       const subscriptionsRef = collection(db, `users/${user.uid}/subscriptions`);
       const subscriptionSnapshot = await getDocs(subscriptionsRef);
-      let hasActiveSubscription = false;
+      let activeSubscription = false;
       
       subscriptionSnapshot.forEach(doc => {
-        const subscriptionData = doc.data();
-        console.log(`Checking subscription ${doc.id}:`, subscriptionData);
-        if (subscriptionData.status === "active") {
-          hasActiveSubscription = true;
+        if (doc.data().status === "active") {
+          activeSubscription = true;
         }
       });
   
-      if (hasActiveSubscription) {
-        console.log("Active subscription found.");
-        return { ...data, hasActiveSubscription: true };
-      } else {
-        console.log("No active subscription found.");
-        return { ...data, hasActiveSubscription: false };
-      }
+      setCurrentUser(user);
+      setStripeId(data.stripeId || null);
+      setHasActiveSubscription(activeSubscription);
+
+      return { ...data, hasActiveSubscription: activeSubscription };
     } else {
       console.log("No user data found");
+      setCurrentUser(user); // Still set the user but mark the subscription as inactive
+      setHasActiveSubscription(false);
       return null;  // Handle case where user data doesn't exist
     }
   };
@@ -48,19 +60,10 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setLoading(true);
       if (user) {
-        const userData = await fetchUserData(user);
-        if (userData) {
-          setStripeId(userData.stripeId);
-          setCurrentUser(user);
-          setHasActiveSubscription(userData.hasActiveSubscription);
-        } else {
-          setStripeId(null);
-          setCurrentUser(user);
-          setHasActiveSubscription(false);
-        }
+        await fetchUserData(user);
       } else {
-        setStripeId(null);
         setCurrentUser(null);
+        setStripeId(null);
         setHasActiveSubscription(false);
       }
       setLoading(false);
@@ -78,7 +81,8 @@ export const AuthProvider = ({ children }) => {
       hasActiveSubscription,
       setHasActiveSubscription,
       loading,
-      fetchUserData,  // Make sure to expose this function
+      fetchUserData,
+      logout,  // Expose the logout function
     }}>
       {children}
     </AuthContext.Provider>

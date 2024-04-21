@@ -12,48 +12,44 @@ import Profile from "./Profile";
 import Upgrade from "./Upgrade";
 import Quiz from "./Quiz";
 import Settings from "./Settings";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../AuthContext';
+import MockExams from "./MockExams";
 
 const Dashboard = () => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
   const [topics, setTopics] = useState([]);
-  const [user, setUser] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [userName, setUserName] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const { currentUser, hasActiveSubscription } = useAuth();
+  const navigate = useNavigate();
+  const [exams, setExams] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        console.log("Dashboard: User is logged in:", user);
-        setUser(user);
-        const userRef = doc(db, "users", user.uid);
-        try {
-          const userSnap = await getDoc(userRef);
-          if (userSnap.exists() && userSnap.data().name) {
-            console.log("Dashboard: User data:", userSnap.data());
-            setUserName(userSnap.data().name);
-          } else {
-            console.log("Dashboard: No user name found, showing modal");
-            setShowModal(true);
-          }
-        } catch (error) {
-          console.error("Dashboard: Error fetching user data:", error);
+    // Redirect if not logged in or no active subscription
+    if (!currentUser || !hasActiveSubscription) {
+      console.log("Redirecting to sign-in, no active subscription or user is not logged in.");
+      navigate("/sign-in");
+    } else if (!userName && currentUser) {
+      // Fetch user details again only if necessary, i.e., userName is not set
+      const userRef = doc(db, "users", currentUser.uid);
+      getDoc(userRef).then(userDoc => {
+        if (userDoc.exists() && userDoc.data().name) {
+          setUserName(userDoc.data().name);
+        } else {
+          setShowModal(true);
         }
-      } else {
-        console.log("Dashboard: User is not logged in");
-        setUser(null);
-      }
-    });
-    return () => unsubscribe();
-  }, []);
+      }).catch(error => {
+        console.error("Dashboard: Error fetching user data:", error);
+      });
+    }
+  }, [currentUser, hasActiveSubscription, navigate, userName]);
 
-  const closeModal = (newName) => {
-    setShowModal(false);
-    setUserName(newName);
-  };
 
+  // fetch topics on load
   useEffect(() => {
-    const fetchTopics = async () => {
-      try {
+    if (currentUser && hasActiveSubscription) {
+      const fetchTopics = async () => {
         const querySnapshot = await getDocs(collection(db, "topics"));
         const topicsArray = querySnapshot.docs.map(doc => ({
           id: doc.id,
@@ -62,22 +58,51 @@ const Dashboard = () => {
           correct: 0,
           incorrect: 0,
         }));
-        console.log("Dashboard: Topics fetched:", topicsArray);
         setTopics(topicsArray);
-      } catch (error) {
-        console.error("Dashboard: Error fetching topics:", error);
-      }
+      };
+      fetchTopics();
+    }
+  }, [currentUser, hasActiveSubscription]);
+
+ // fetch mock exams on load
+useEffect(() => {
+  if (currentUser && hasActiveSubscription) {
+    const fetchExams = async () => {
+      const querySnapshot = await getDocs(collection(db, "mockexams"));
+      const examsArray = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        exam: doc.data().exam, // Assuming 'exam' field contains the exam name
+        totalQuestions: 20, // Default to 1 until database update
+        correct: 4,
+        incorrect: 2
+      })).sort((a, b) => {
+        const numA = parseInt(a.exam.match(/\d+/)[0], 10);
+        const numB = parseInt(b.exam.match(/\d+/)[0], 10);
+        return numA - numB;
+      });
+      setExams(examsArray);
     };
-    fetchTopics();
-  }, []);
+
+    fetchExams();
+  }
+}, [currentUser, hasActiveSubscription]);
+
+
 
   const handleNavChange = (newNav) => {
     setSelectedNav(newNav);
   };
 
+  const closeModal = (newName) => {
+    setShowModal(false);
+    setUserName(newName);
+  };
+
+
+
   return (
     <div className="flex bg-neutral-100 min-h-screen">
-      {showModal && <UserNameModal user={user} onClose={closeModal} />}
+      {showModal && <UserNameModal user={currentUser} onClose={closeModal} />}
       <Sidebar selectedNav={selectedNav} onNavChange={handleNavChange} />
       <div className="flex-1 w-full">
         <TopNavigation
@@ -109,7 +134,7 @@ const Dashboard = () => {
               <Quizzes topics={topics} isTruncated={false} />
             )}
             {selectedNav === "Mock Exams" && (
-              <Quiz />
+              <MockExams exams={exams}  isTruncated={false} />
             )}
             {selectedNav === "Profile" && (
               <>

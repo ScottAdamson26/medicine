@@ -39,7 +39,7 @@ function AppInner() {
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/home" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-        <Route path="/subscription-success" element={<ProtectedRoute><SubscriptionSuccess /></ProtectedRoute>} />
+        <Route path="/subscription-success" element={<SubscriptionSuccess/>}/>
       </Routes>
     </div>
   );
