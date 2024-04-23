@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
+import { useAuth } from '../../AuthContext';
 
 const UserNameModal = ({ user, onClose }) => {
     const [name, setName] = useState("");
-  
+    
+  const { SetName: updateContextName } = useAuth()
     const handleSubmit = async (e) => {
       e.preventDefault();
       const userRef = doc(db, 'users', user.uid);
@@ -13,6 +15,7 @@ const UserNameModal = ({ user, onClose }) => {
           name: name, // Only update the name field
         });
         console.log("User name added to Firestore");
+        updateContextName(name); 
         onClose(name); // Pass the new name back to the Dashboard
       } catch (error) {
         console.error("Error updating user data: ", error.message);

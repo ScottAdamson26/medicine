@@ -64,7 +64,7 @@ const Quizzes = ({ topics, isTruncated }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg  w-full overflow-auto">
+    <div className="bg-white rounded-lg shadow-lg  w-full overflow-auto mb-4 xl:mb-0">
       <div className="p-4 flex-1 flex justify-between flex-row items-start md:items-center">
         <div className="flex flex-col md:flex-row items-start md:items-center">
           <h2 className="text-xl">Quiz Topics</h2>

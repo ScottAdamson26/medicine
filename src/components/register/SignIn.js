@@ -5,9 +5,9 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import Lottie from "react-lottie";
 import spinnerAnimation from "./spinner.json"; // Ensure this path is correct
 import Google from "./google.webp";
-import { useAuth } from '../../AuthContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from "../../AuthContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,9 +20,9 @@ const SignIn = () => {
     setCurrentUser,
     setStripeId,
     setHasActiveSubscription,
-    fetchUserData  // Ensure you destruct this from useAuth
+    fetchUserData, // Ensure you destruct this from useAuth
   } = useAuth();
-  
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -31,7 +31,11 @@ const SignIn = () => {
     e.preventDefault();
     setIsSigningIn(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       console.log("Authentication successful:", userCredential.user);
       const userData = await fetchUserData(userCredential.user);
       if (userData) {
@@ -44,7 +48,7 @@ const SignIn = () => {
           navigate("/pricing");
         }
       } else {
-        throw new Error('Failed to retrieve user data');
+        throw new Error("Failed to retrieve user data");
       }
     } catch (error) {
       console.error("Authentication or data fetch failed:", error);
@@ -52,9 +56,10 @@ const SignIn = () => {
       setSignInError(error.message || "An error occurred. Please try again.");
     }
   };
-  
 
-
+  const handleSignUpClick = () => {
+    navigate("/register"); // Use navigate to go to the register page
+  };
 
   return (
     <div className="flex justify-center items-center h-screen text-zinc-800 px-4">
@@ -91,9 +96,13 @@ const SignIn = () => {
             <FontAwesomeIcon
               icon={faEye}
               onClick={togglePasswordVisibility}
-              className={`absolute inset-y-0 right-3 my-auto text-gray-400 opacity-40 hover:text-gray-600 h cursor-pointer ${showPassword ? 'text-gray-600' : 'text-gray-400'}`}
+              className={`absolute inset-y-0 right-3 my-auto text-gray-400 opacity-40 hover:text-gray-600 h cursor-pointer ${
+                showPassword ? "text-gray-600" : "text-gray-400"
+              }`}
             />
-            {signInError && <p className="text-red-500 text-xs italic mt-2">{signInError}</p>}
+            {signInError && (
+              <p className="text-red-500 text-xs italic mt-2">{signInError}</p>
+            )}
           </div>
           <div className="flex items-center justify-between mb-4">
             <button
@@ -137,10 +146,13 @@ const SignIn = () => {
             />
             <span className="align-middle">Sign in with Google</span>
           </button>
+          <div className="flex flex-col mt-4 items-center w-full">
+            <h2 className="justify-center text-sm text-cyan-500">Not got an account? <span className="font-semibold cursor-pointer underline"  onClick={handleSignUpClick}>Sign up!</span></h2>
+          </div>
         </form>
       </div>
     </div>
   );
-}
+};
 
 export default SignIn;

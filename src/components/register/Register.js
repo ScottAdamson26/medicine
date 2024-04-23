@@ -67,6 +67,10 @@ function Register() {
     }
   };
 
+  const handleSignUpClick = () => {
+    navigate("/sign-in"); // Use navigate to go to the register page
+  };
+
   return (
     <div className="flex justify-center items-center h-screen text-zinc-800 px-4">
       <div className="w-full max-w-sm bg-gradient-to-r from-blue-300 to-cyan-400 p-1 rounded-xl shadow-md">
@@ -127,7 +131,11 @@ function Register() {
             <img src={Google} alt="Google logo" className="h-6 mr-4" />
             <span>Sign up with Google</span>
           </button>
+          <div className="flex flex-col mt-4 items-center w-full">
+            <h2 className="justify-center text-sm text-cyan-500">Already got an account? <span className="font-semibold cursor-pointer underline"  onClick={handleSignUpClick}>Sign in!</span></h2>
+          </div>
         </form>
+        
       </div>
     </div>
   );

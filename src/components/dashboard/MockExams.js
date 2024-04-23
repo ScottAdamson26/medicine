@@ -36,7 +36,7 @@ const MockExams = ({ exams }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-full overflow-auto">
+    <div className="bg-white rounded-lg shadow-lg w-full overflow-auto mb-4">
       <div className="p-4 pb-2 -1 flex justify-between flex-row items-start md:items-center">
         <div className="flex flex-col md:flex-row items-start md:items-center">
           <h2 className="text-xl">Mock Exams</h2>
