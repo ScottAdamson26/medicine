@@ -41,6 +41,7 @@ const Dashboard = () => {
         const querySnapshot = await getDocs(collection(db, "topics"));
         const topicsArray = querySnapshot.docs.map(doc => ({
           id: doc.id,
+          name: doc.data().name,
           totalQuestions: doc.data().totalQuestions || 1,
           correct: 0,
           incorrect: 0,
