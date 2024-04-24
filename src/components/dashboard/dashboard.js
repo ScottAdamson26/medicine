@@ -4,7 +4,7 @@ import Quizzes from "./Quizzes";
 import Welcome from "./Welcome";
 import TopNavigation from "./TopNavigation";
 import Continue from "./Continue";
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import UserNameModal from "./UserNameModal";
 import Timer from "./Timer";
@@ -12,7 +12,7 @@ import Profile from "./Profile";
 import Upgrade from "./Upgrade";
 import Settings from "./Settings";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from '../../AuthContext';
+import { useAuth } from "../../AuthContext";
 import MockExams from "./MockExams";
 
 const Dashboard = () => {
@@ -26,7 +26,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!currentUser || !hasActiveSubscription) {
-      console.log("Redirecting to sign-in, no active subscription or user is not logged in.");
+      console.log(
+        "Redirecting to sign-in, no active subscription or user is not logged in."
+      );
       navigate("/sign-in");
     } else if (!name && currentUser) {
       // Show modal to set user name if name is null
@@ -39,7 +41,7 @@ const Dashboard = () => {
     if (currentUser && hasActiveSubscription) {
       const fetchTopics = async () => {
         const querySnapshot = await getDocs(collection(db, "topics"));
-        const topicsArray = querySnapshot.docs.map(doc => ({
+        const topicsArray = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name,
           totalQuestions: doc.data().totalQuestions || 1,
@@ -52,30 +54,30 @@ const Dashboard = () => {
     }
   }, [currentUser, hasActiveSubscription]);
 
- // fetch mock exams on load
-useEffect(() => {
-  if (currentUser && hasActiveSubscription) {
-    const fetchExams = async () => {
-      const querySnapshot = await getDocs(collection(db, "mockexams"));
-      const examsArray = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        exam: doc.data().exam, // Assuming 'exam' field contains the exam name
-        totalQuestions: 20, // Default to 1 until database update
-        correct: 4,
-        incorrect: 2
-      })).sort((a, b) => {
-        const numA = parseInt(a.exam.match(/\d+/)[0], 10);
-        const numB = parseInt(b.exam.match(/\d+/)[0], 10);
-        return numA - numB;
-      });
-      setExams(examsArray);
-    };
+  // fetch mock exams on load
+  useEffect(() => {
+    if (currentUser && hasActiveSubscription) {
+      const fetchExams = async () => {
+        const querySnapshot = await getDocs(collection(db, "mockexams"));
+        const examsArray = querySnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            exam: doc.data().exam, // Assuming 'exam' field contains the exam name
+            totalQuestions: 20, // Default to 1 until database update
+            correct: 4,
+            incorrect: 2,
+          }))
+          .sort((a, b) => {
+            const numA = parseInt(a.exam.match(/\d+/)[0], 10);
+            const numB = parseInt(b.exam.match(/\d+/)[0], 10);
+            return numA - numB;
+          });
+        setExams(examsArray);
+      };
 
-    fetchExams();
-  }
-}, [currentUser, hasActiveSubscription]);
-
-
+      fetchExams();
+    }
+  }, [currentUser, hasActiveSubscription]);
 
   const handleNavChange = (newNav) => {
     setSelectedNav(newNav);
@@ -86,11 +88,9 @@ useEffect(() => {
     setUserName(newName);
   };
 
-
-
   return (
     <div className="flex bg-neutral-100 min-h-screen">
-      {showModal && <UserNameModal user={currentUser} onClose={closeModal}/>}
+      {showModal && <UserNameModal user={currentUser} onClose={closeModal} />}
       <Sidebar selectedNav={selectedNav} onNavChange={handleNavChange} />
       <div className="flex-1 w-full">
         <TopNavigation
@@ -119,23 +119,24 @@ useEffect(() => {
               </>
             )}
             {selectedNav === "Quizzes" && (
-              <Quizzes topics={topics} isTruncated={false} />
+              <div className="mb-4">
+                <Quizzes topics={topics} isTruncated={false} />
+              </div>
             )}
             {selectedNav === "Mock Exams" && (
-              <MockExams exams={exams}  isTruncated={false} />
+              <MockExams exams={exams} isTruncated={false} />
             )}
             {selectedNav === "Profile" && (
               <>
-                <Profile/>
+                <Profile />
                 <Upgrade />
               </>
             )}
             {selectedNav === "Settings" && (
               <>
-              <Settings />
+                <Settings />
               </>
             )}
-            
           </div>
 
           {/* Column 2 - No specific width classes needed */}
