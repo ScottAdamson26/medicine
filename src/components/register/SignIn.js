@@ -82,28 +82,33 @@ const SignIn = () => {
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             />
           </div>
+          {/* Password input with eye icon */}
           <div className="mb-4 relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setSignInError("");
-              }}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            <FontAwesomeIcon
-              icon={faEye}
-              onClick={togglePasswordVisibility}
-              className={`absolute inset-y-0 right-3 my-auto text-gray-400 opacity-40 hover:text-gray-600 h cursor-pointer ${
-                showPassword ? "text-gray-600" : "text-gray-400"
-              }`}
-            />
+            <div className="flex items-center relative border rounded shadow appearance-none w-full">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setSignInError(""); // Reset the error when user edits the field
+                }}
+                className="py-2 px-3 w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+              <FontAwesomeIcon
+                icon={faEye}
+                onClick={togglePasswordVisibility}
+                className={`absolute inset-y-0 right-3 my-auto text-gray-400 hover:text-gray-600 cursor-pointer ${
+                  showPassword ? "text-gray-600" : "text-gray-400"
+                }`}
+                style={{ zIndex: 10 }} // Ensure the icon is above the input in layer stack
+              />
+            </div>
             {signInError && (
               <p className="text-red-500 text-xs italic mt-2">{signInError}</p>
             )}
           </div>
+
           <div className="flex items-center justify-between mb-4">
             <button
               type="submit"
@@ -147,7 +152,15 @@ const SignIn = () => {
             <span className="align-middle">Sign in with Google</span>
           </button>
           <div className="flex flex-col mt-4 items-center w-full">
-            <h2 className="justify-center text-sm text-cyan-500">Not got an account? <span className="font-semibold cursor-pointer underline"  onClick={handleSignUpClick}>Sign up!</span></h2>
+            <h2 className="justify-center text-sm text-cyan-500">
+              Not got an account?{" "}
+              <span
+                className="font-semibold cursor-pointer underline"
+                onClick={handleSignUpClick}
+              >
+                Sign up!
+              </span>
+            </h2>
           </div>
         </form>
       </div>

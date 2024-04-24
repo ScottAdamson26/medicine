@@ -24,7 +24,7 @@ const UserNameModal = ({ user, onClose }) => {
   
   return (
     <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex justify-center items-center">
-      <div className="bg-gradient-to-r from-blue-300 to-cyan-400 p-1 rounded-xl shadow-xl">
+      <div className="bg-gradient-to-r from-blue-300 to-cyan-400 p-1 rounded-xl shadow-xl m-2">
         <div className="bg-white p-4 rounded-lg shadow-lg z-50 flex flex-col justify-center items-center">
           <h2 className="text-xl font-bold mb-4">
             Welcome! <span className="text-3xl">👋</span> What should we call you?

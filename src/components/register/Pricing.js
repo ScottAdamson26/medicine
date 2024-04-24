@@ -76,7 +76,7 @@ function Pricing() {
         </div>
 
         {/* Tier 2 - Pro Plan (Most Popular) */}
-        <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1">
+        <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1 mt-4 md-0">
           <div className="bg-gradient-to-r from-blue-300 to-cyan-400 absolute -top-7 left-1/2 transform -translate-x-1/2 bg-blue-500 py-1 text-sm text-white rounded-t-xl inline-flex items-center justify-center w-full">
             Most Popular
           </div>

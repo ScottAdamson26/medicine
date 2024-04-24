@@ -87,25 +87,29 @@ function Register() {
             />
             {emailError && <p className="text-red-500 text-xs italic mt-2">{emailError}</p>}
           </div>
-          {/* Password input */}
-           <div className="mb-4 relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setPasswordError("");
-              }}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            />
-            <FontAwesomeIcon
-              icon={faEye}
-              onClick={togglePasswordVisibility}
-              className={`absolute inset-y-0 right-3 opacity-40 my-auto text-gray-400 hover:text-gray-600 cursor-pointer ${showPassword ? 'text-gray-600' : 'text-gray-400'}`}
-            />
-            {passwordError && <p className="text-red-500 text-xs italic mt-2">{passwordError}</p>}
-          </div>
+{/* Password input with eye icon */}
+<div className="mb-4 relative">
+  <div className="flex items-center relative border rounded shadow appearance-none w-full">
+    <input
+      type={showPassword ? "text" : "password"}
+      placeholder="Password"
+      value={password}
+      onChange={(e) => {
+        setPassword(e.target.value);
+        setPasswordError("");
+      }}
+      className="py-2 px-3 w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    />
+    <FontAwesomeIcon
+      icon={faEye}
+      onClick={togglePasswordVisibility}
+      className={`absolute inset-y-0 right-3 my-auto text-gray-400 hover:text-gray-600 cursor-pointer ${showPassword ? 'text-gray-600' : 'text-gray-400'}`}
+      style={{ zIndex: 10 }} // Ensure the icon is above the input in layer stack
+    />
+  </div>
+  {passwordError && <p className="text-red-500 text-xs italic mt-2">{passwordError}</p>}
+</div>
+
           {/* Sign up button */}
           <div className="flex items-center justify-between mb-4">
             <button type="submit" disabled={isRegistering}
