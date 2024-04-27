@@ -14,6 +14,8 @@ import Settings from "./Settings";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import MockExams from "./MockExams";
+import UploadQuestions from "./Upload";
+import Quiz from "./Quiz";
 
 const Dashboard = () => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
@@ -23,6 +25,8 @@ const Dashboard = () => {
   const { currentUser, hasActiveSubscription, name } = useAuth();
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [currentTopicIds, setCurrentTopicIds] = useState([]);
 
   useEffect(() => {
     if (!currentUser || !hasActiveSubscription) {
@@ -44,7 +48,7 @@ const Dashboard = () => {
         const topicsArray = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name,
-          totalQuestions: doc.data().totalQuestions || 1,
+          totalQuestions: doc.data().numQuestions || 0,
           correct: 0,
           incorrect: 0,
         }));
@@ -89,7 +93,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex bg-neutral-100 min-h-screen">
+    <div className="flex bg-neutral-100 min-h-screen overflow-x-hidden">
       {showModal && <UserNameModal user={currentUser} onClose={closeModal} />}
       <Sidebar selectedNav={selectedNav} onNavChange={handleNavChange} />
       <div className="flex-1 w-full">
@@ -97,9 +101,9 @@ const Dashboard = () => {
           selectedNav={selectedNav}
           onNavChange={handleNavChange}
         />
-        <div className="flex p-4 md:p-8 md:pl-0 text-2xl font-bold flex flex-col xl:flex-row">
-          <div className="flex flex-col w-full xl:w-2/3">
-            {selectedNav === "Dashboard" && (
+        <div className="flex p-4 md:p-8 md:pl-0 text-2xl font-bold flex flex-col xl:flex-row w-full">
+          <div className="flex flex-col w-full xl:w-3/5 2xl:w-2/3">
+            {selectedNav === "Dashboard" && !showQuiz && (
               <>
                 <div className="mb-4">
                   {" "}
@@ -114,25 +118,31 @@ const Dashboard = () => {
                 <div className="mb-4">
                   {" "}
                   {/* Margin bottom for spacing, adjust if needed */}
-                  <Quizzes topics={topics} isTruncated={true} />
+                  <Quizzes topics={topics} isTruncated={true} setShowQuiz={setShowQuiz} setCurrentTopicIds={setCurrentTopicIds}/>
+
                 </div>
               </>
             )}
-            {selectedNav === "Quizzes" && (
+            { showQuiz && (
+              <Quiz currentTopicIds={currentTopicIds}  />
+            )
+            }
+            {selectedNav === "Quizzes" && !showQuiz && (
               <div className="mb-4">
-                <Quizzes topics={topics} isTruncated={false} />
+                <Quizzes topics={topics} isTruncated={false} setShowQuiz={setShowQuiz} setCurrentTopicIds={setCurrentTopicIds}/>
+
               </div>
             )}
-            {selectedNav === "Mock Exams" && (
+            {selectedNav === "Mock Exams" && !showQuiz &&  (
               <MockExams exams={exams} isTruncated={false} />
             )}
-            {selectedNav === "Profile" && (
+            {selectedNav === "Profile" && !showQuiz && (
               <>
                 <Profile />
                 <Upgrade />
               </>
             )}
-            {selectedNav === "Settings" && (
+            {selectedNav === "Settings" && !showQuiz && (
               <>
                 <Settings />
               </>
@@ -140,12 +150,13 @@ const Dashboard = () => {
           </div>
 
           {/* Column 2 - No specific width classes needed */}
-          <div className="flex-1 pl-0 xl:pl-8">
+          <div className="flex-1 pl-0 xl:pl-8 xl:w-2/5 2xl:w-1/3">
             <Timer />
             {!(selectedNav === "Profile") && (
               <>
                 <Profile name={userName} />
                 <Upgrade setSelectedNav={setSelectedNav} />
+
               </>
             )}
           </div>

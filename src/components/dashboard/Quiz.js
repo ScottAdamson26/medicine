@@ -1,41 +1,69 @@
 import React, { useEffect, useState } from "react";
 import Checkbox from "./Checkbox";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from"../../firebase-config";
+import { doc, getDocs, query, collection, where, limit } from "firebase/firestore";
+import { db } from "../../firebase-config";
 
-const Quiz = () => {
-  const [checkedState, setCheckedState] = useState([false, false, false, false, false]);
+const Quiz = ({currentTopicIds}) => {
+  const [checkedState, setCheckedState] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
   const [questionData, setQuestionData] = useState(null); // This will store the question document data
   const [submitted, setSubmitted] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [incorrectIndex, setIncorrectIndex] = useState(null);
 
-  // Fetch question from Firestore
   useEffect(() => {
-    const fetchQuestion = async () => {
-      const questionId = "G70O1GmjN1biopaf5w7M"; // Define the question ID here
-      const questionDoc = doc(db, "questions", questionId);
-      const docSnapshot = await getDoc(questionDoc);
-      if (docSnapshot.exists()) {
-        const data = docSnapshot.data();
-        // Transform the answers into an array if they are stored as a map/object in Firestore
-        const answers = Object.keys(data.answers).map(key => ({
-          text: data.answers[key].answer,
-          correct: data.answers[key].isCorrect
-        }));
-        setQuestionData({
-          question: data.question,
-          prompt: data.prompt,
-          answers: answers
-        });
+    const fetchRandomQuestion = async () => {
+      if (currentTopicIds && currentTopicIds.length > 0) {
+        console.log("Fetching question for topic IDs: ", currentTopicIds);
+        const randomTopicId = currentTopicIds[Math.floor(Math.random() * currentTopicIds.length)];
+        console.log("Selected Random Topic ID: ", randomTopicId);
+
+        // Create a reference to the topic document
+        const topicRef = doc(db, "topics", randomTopicId);
+        console.log("Created reference for topic: ", topicRef);
+
+        // Build a query to fetch a random question from this topic
+        const questionsRef = collection(db, "questions");
+        const q = query(questionsRef, where("topicReference", "==", topicRef), limit(1));
+
+        try {
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const questionDoc = querySnapshot.docs[0];
+            console.log("Fetched Question Data: ", questionDoc.data());
+            const data = questionDoc.data();
+            setQuestionData({
+              ...data,
+              answers: data.options.map(option => ({
+                text: option.answer,
+                correct: option.isCorrect
+              }))
+            });
+          } else {
+            console.log("No questions found for selected topic.");
+            setQuestionData(null);
+          }
+        } catch (error) {
+          console.error("Error fetching question: ", error);
+          setQuestionData(null);
+        }
       } else {
-        console.error("No question found in Firestore");
+        console.log("No valid Topic IDs array provided.");
       }
     };
 
-    fetchQuestion();
-  }, []);
+    fetchRandomQuestion();
+  }, [currentTopicIds]);
 
+  if (!questionData) {
+    console.log("Loading question..."); // This log will show up continuously if the data doesn't load
+    return <div>Loading question...</div>;
+  }
   const handleCheckboxChange = (index) => {
     if (!submitted) {
       const newCheckedState = checkedState.map((item, i) => i === index);
@@ -78,14 +106,13 @@ const Quiz = () => {
     }
   };
 
-  if (!questionData) {
-    return <div>Loading question...</div>;
-  }
-
   return (
-    <div className="flex flex-col w-full bg-white rounded-xl shadow-lg p-8 mb-4">
+    <div className="flex flex-col w-full bg-white rounded-xl shadow-lg p-8 mb-4 ">
+      <div className="w-full justify-between text-cyan-400 text-xs">
+        <h1>Question 1 of 2</h1>
+      </div>
       {/* Question content here */}
-      <div className="mt-2 text-base">
+      <div className="mt-2 text-base font-semibold">
         <h2>{questionData.question}</h2>
         <h3 className="mt-4">{questionData.prompt}</h3>
       </div>
@@ -95,7 +122,9 @@ const Quiz = () => {
         {questionData.answers.map((answer, index) => (
           <div
             key={index}
-            className={`flex items-center rounded-lg shadow-md p-4 cursor-pointer mb-6 ${getAnswerBackground(index)}`}
+            className={`flex items-center rounded-lg shadow-custom-lg p-4 cursor-pointer mb-6 ${getAnswerBackground(
+              index
+            )}`}
             onClick={() => handleCheckboxChange(index)}
           >
             <div className="shrink-0 flex items-center">
@@ -110,6 +139,15 @@ const Quiz = () => {
         ))}
       </div>
 
+        { submitted && (
+          <div>
+            <div className="w-full h-px bg-cyan-200 mb-6"/>
+          <div className="rounded-lg p-4 shadow-custom-lg mb-6">
+            <h3 className="text-cyan-400 text-xs">Explanation </h3>
+            <p className="mt-2 text-base font-semibold">{questionData.explanation}</p>
+            </div>
+            </div>
+        )}
       {/* Submission button */}
       <div>
         <button

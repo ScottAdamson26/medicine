@@ -6,6 +6,9 @@ module.exports = {
   darkMode: false,
   theme: {
     extend: {
+      boxShadow: {
+        'custom-lg': '0 0px 12px -3px rgba(0, 0, 0, 0.15)'
+      },
       fontFamily: {
         'montserrat': ['Montserrat', 'sans-serif'],
       },

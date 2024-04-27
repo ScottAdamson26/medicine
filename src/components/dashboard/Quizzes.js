@@ -7,7 +7,7 @@ import {
   faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 
-const Quizzes = ({ topics, isTruncated }) => {
+const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   const [selectedQuizzes, setSelectedQuizzes] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("All"); // New state for tracking the selected filter
@@ -38,6 +38,27 @@ const Quizzes = ({ topics, isTruncated }) => {
     setCurrentFilter(filter);
   };
 
+  const getTotalQuestions = () => {
+    console.log("Selected Quizzes IDs: ", selectedQuizzes); // Log the selected quiz IDs
+    console.log("Filtered Topics Data: ", filteredTopics()); // Log filtered topics
+
+    const total = filteredTopics().reduce((acc, topic) => {
+      if (selectedQuizzes.includes(topic.id)) {
+        console.log(
+          "Adding Topic:",
+          topic.name,
+          "totalQuestions:",
+          topic.numQuestions
+        ); // Log each addition
+        return acc + topic.totalQuestions; // Ensure topic has 'numQuestions' field
+      }
+      return acc;
+    }, 0);
+
+    console.log("Total Questions:", total); // Log the total number of questions calculated
+    return total;
+  };
+
   const filteredTopics = () => {
     switch (currentFilter) {
       case "Uncompleted":
@@ -65,15 +86,23 @@ const Quizzes = ({ topics, isTruncated }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-lg  w-full overflow-auto mb-0 xl:mb-0">
-      <div className="p-4 flex-1 flex justify-between flex-row items-start md:items-center">
+      <div className="px-4 pt-4 flex-1 flex justify-between flex-row items-start md:items-center">
         <div className="flex flex-col md:flex-row items-start md:items-center">
           <h2 className="text-xl">Quiz Topics</h2>
           {selectedQuizzes.length > 0 && (
-            <div className="flex flex-row items-center cursor-pointer text-sm mt-1 md:mt-0">
-              <h3 className="p-0 md:pl-4 text-cyan-500">Start</h3>
+            <div
+              className="flex flex-row items-center cursor-pointer text-sm mt-1 md:mt-0"
+              onClick={() => {
+                setShowQuiz(true);
+                setCurrentTopicIds(selectedQuizzes); // Pass the selected topic IDs
+              }}
+            >
+              <h3 className="p-0 md:pl-4 text-cyan-500 hidden md:block">
+                Start {getTotalQuestions()} questions
+              </h3>
               <FontAwesomeIcon
                 icon={faAngleRight}
-                className="text-cyan-500 text-base ml-1"
+                className="text-cyan-500 text-base ml-1 hidden md:block"
               />
             </div>
           )}
@@ -99,7 +128,17 @@ const Quizzes = ({ topics, isTruncated }) => {
           </button>
         </div>
       </div>
-
+      {selectedQuizzes.length > 0 && (
+        <div className="flex flex-row items-center md:hidden text-sm px-4 pb-2">
+          <h3 className="p-0 text-cyan-500">
+            Start {getTotalQuestions()} questions
+          </h3>
+          <FontAwesomeIcon
+            icon={faAngleRight}
+            className="text-cyan-500 text-base ml-1"
+          />
+        </div>
+      )}
       {/* header row */}
       <div
         className="flex border-b text-xs font-medium flex-row items-center px-4 py-2 text-zinc-400 cursor-pointer"
