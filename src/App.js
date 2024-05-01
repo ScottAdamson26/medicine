@@ -34,8 +34,8 @@ function AppInner() {
   return (
     <div className='bg-white dark:bg-white font-montserrat w-full'>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/l" element={<LandingPage2 />} />
+        <Route path="/l" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage2 />} />
 
         <Route path="/register" element={<Register />} />
         <Route path="/pricing" element={<Pricing />} />
