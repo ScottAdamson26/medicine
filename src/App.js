@@ -6,7 +6,6 @@ import {
   Navigate
 } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
-import LandingPage from './components/landing/LandingPage';
 import Register from './components/register/Register';
 import Pricing from './components/register/Pricing';
 import SignIn from './components/register/SignIn';
@@ -34,7 +33,6 @@ function AppInner() {
   return (
     <div className='bg-white dark:bg-white font-montserrat w-full'>
       <Routes>
-        <Route path="/l" element={<LandingPage />} />
         <Route path="/" element={<LandingPage2 />} />
 
         <Route path="/register" element={<Register />} />

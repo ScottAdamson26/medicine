@@ -12,9 +12,16 @@ import {
 import Doctors from "./doctors.png";
 import David from "./david.png";
 import Footer from "./Footer";
+import {
+  faBolt,
+  faClock,
+  faChartSimple,
+  faGraduationCap,
+} from "@fortawesome/free-solid-svg-icons";
+
 function LandingPage2() {
   return (
-    <div className="flex flex-col min-h-screen pt-2 px-2 relative">
+    <div className="flex flex-col items-center min-h-screen pt-2 px-2 relative">
       {/* Background layer */}
       <div
         className="absolute top-0 left-0 w-full h-screen bg-white"
@@ -36,7 +43,7 @@ function LandingPage2() {
 
         {/* Content Container */}
         <div className="flex-grow flex flex-col justify-center items-center md:px-10">
-          <div className="text-center w-full lg:mt-10">
+          <div className="text-center w-full md:mt-24">
             <button
               onClick={() => (window.location.href = "/register")}
               className="outline-dashed outline-1 text-xs font-semibold outline-red-500 rounded-full py-0.5 px-3 mb-5 text-red-500"
@@ -154,7 +161,7 @@ function LandingPage2() {
           </div>
         </div>
       </div>
-      
+
       <div className="flex items-center text-5xl text-grey opacity-10 justify-center w-full mb-20 md:mb-28 px-10 md:px-28">
         <div className="flex justify-between items-center w-full max-w-6xl">
           <FontAwesomeIcon icon={faRedditAlien} className="md:ml-16" />
@@ -164,55 +171,92 @@ function LandingPage2() {
         </div>
       </div>
 
-      <div className=" flex flex-col justify-center items-center bg-white text-zinc-800 md:px-5 mb-28">
-      <h1 className="text-lg font-bold text-cyan-400 text-center mb-20">PRICING</h1>
-
-      <div className="w-full px-5 md:px-20 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20">
-        {/* Tier 1 - Free Plan */}
-        <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1">
-          <div className="bg-white rounded-lg flex flex-col w-full h-full p-8">
-            <h2 className="text-xl font-bold mb-4">Free Plan</h2>
-            <ul className="mb-4">
-              <li>✔ 20 trial questions</li>
-              <li className="opacity-30">✗ 4 Mock Exams</li>
-              <li className="opacity-30">✗ Pomodoro Study Timer</li>
-            </ul>
-            <button
-              className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
-
-            >
-
-                Register
-            </button>
+      <div className="flex flex-col justify-center items-center bg-white text-zinc-800 md:px-5 mb-28 max-w-6xl">
+        <h1 className="text-lg font-bold text-cyan-400 text-center mb-20">
+          PERKS{" "}
+        </h1>
+        <div className="grid lg:grid-cols-3 grid-rows-3 lg:grid-rows-1 gap-10 lg:gap-20 w-full">
+          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py-28 px-20 lg:px-5 text-balance rounded-lg shadow-custom-lg">
+            <div className="w-16 h-16 flex justify-center items-center mb-10  bg-gradient-to-r from-purple-200 to-fuchsia-300 rounded-lg shadow-custom-lg">
+              <FontAwesomeIcon icon={faClock} className="text-white text-3xl" />
+            </div>
+            <p className="text-center text-grey opacity-40 font-semibold">
+              Pomodoro study timer
+            </p>
           </div>
-        </div>
-
-        {/* Tier 2 - Pro Plan (Most Popular) */}
-        <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1 md-0">
-          <div className="bg-gradient-to-r from-blue-300 to-cyan-400 absolute -top-7 left-1/2 transform -translate-x-1/2 bg-blue-500 py-1 text-sm text-white rounded-t-xl inline-flex items-center justify-center w-full">
-            Most Popular
+          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py- px-5 text-balance rounded-lg shadow-custom-lg">
+            <div className="w-16 h-16 flex justify-center items-center mb-10  bg-gradient-to-r from-green-300 to-lime-300 bg-green-200 rounded-lg shadow-custom-lg">
+              <FontAwesomeIcon
+                icon={faChartSimple}
+                className="text-white text-3xl"
+              />
+            </div>
+            <p className="text-center text-grey opacity-40 font-semibold">
+              Detailed stats tracking{" "}
+            </p>
           </div>
-          <div className="bg-white rounded-b-lg flex flex-col w-full h-full p-8">
-            <h2 className="text-xl font-bold mb-4">Pro Plan</h2>
-            <ul className="mb-4">
-              <li>✔ 4,000+ Questions</li>
-              <li>✔ 4 Mock Exams</li>
-              <li>✔ Pomodoro Study Timer</li>
-
-            </ul>
-            <button
-              className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
-            >
-         
-                Register
-            </button>
+          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py- px-10 text-balance rounded-lg shadow-custom-lg">
+            <div className="w-16 h-16 flex justify-center items-center mb-10  bg-gradient-to-r from-orange-300 to-rose-300 rounded-lg shadow-custom-lg">
+              <FontAwesomeIcon
+                icon={faGraduationCap}
+                className="text-white text-3xl"
+              />
+            </div>
+            <p className=" text-grey opacity-40 font-semibold text-center">
+              Timed mock exam papers{" "}
+            </p>
           </div>
         </div>
       </div>
-      <Footer/>
-    </div>
-    
-      
+      <div className=" flex flex-col justify-center items-center bg-white text-zinc-800 md:px-5 mb-28">
+        <h1 className="text-lg font-bold text-cyan-400 text-center mb-20">
+          PRICING
+        </h1>
+
+        <div className="w-full px-5 lg:px-20 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:gap-20 gap-16">
+          {/* Tier 1 - Free Plan */}
+          <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1 ">
+            <div className="bg-white rounded-lg flex flex-col w-full h-full w-72 lg:w-96 py-20 px-8">
+              <h2 className="text-xl font-bold mb-4">Free Plan</h2>
+              <ul className="mb-4">
+                <li>✔ 20 trial questions</li>
+                <li className="opacity-30">✗ 4 Mock Exams</li>
+                <li className="opacity-30">✗ Pomodoro Study Timer</li>
+              </ul>
+              <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
+                Register
+              </button>
+            </div>
+          </div>
+
+          {/* Tier 2 - Pro Plan (Most Popular) */}
+          <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1 md-0">
+            <div className="bg-gradient-to-r from-blue-300 to-cyan-400 absolute -top-7 left-1/2 transform -translate-x-1/2 bg-blue-500 py-1 text-sm text-white rounded-t-xl inline-flex items-center justify-center w-full">
+              Most Popular
+            </div>
+            <div className="bg-white rounded-b-lg flex flex-col w-full h-full w-72 lg:w-96 py-20 px-8">
+              <div className="flex flex-row items-center mb-4 ">
+                {" "}
+                <h2 className="text-xl font-bold">Pro Plan</h2>
+                <FontAwesomeIcon
+                  icon={faBolt}
+                  className="text-yellow-400 ml-2"
+                />
+              </div>
+
+              <ul className="mb-4">
+                <li>✔ 4,000+ Questions</li>
+                <li>✔ 4 Mock Exams</li>
+                <li>✔ Pomodoro Study Timer</li>
+              </ul>
+              <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
+                Register
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Footer />
     </div>
   );
 }
