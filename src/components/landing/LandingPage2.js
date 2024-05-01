@@ -66,7 +66,7 @@ function LandingPage2() {
             </h2>
 
             <button
-              className="px-4 py-2 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full flex items-center text-white font-medium [text-shadow:_0_1px_5px_rgb(0_0_0_/_20%)] transition-all duration-500 ease-in-out hover:px-5 mx-auto"
+              className="px-4 py-2 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full flex items-center text-white font-medium [text-shadow:_0_1px_5px_rgb(0_0_0_/_20%)] transition-all duration-500 ease-in-out hover:px-5 mx-auto mb-5"
               onClick={() => (window.location.href = "/register")}
             >
               Get Started
@@ -171,7 +171,7 @@ function LandingPage2() {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center bg-white text-zinc-800 md:px-5 mb-28 max-w-6xl">
+      <div className="flex flex-col justify-center items-center bg-white text-zinc-800 px-5 md:px-5 mb-28 max-w-6xl">
         <h1 className="text-lg font-bold text-cyan-400 text-center mb-20">
           PERKS{" "}
         </h1>
