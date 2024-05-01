@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from "../../firebase-config";
 import Papa from 'papaparse';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, updateDoc } from 'firebase/firestore';
 
 function UploadQuestions() {
   console.log("started upload")
@@ -31,6 +31,7 @@ function UploadQuestions() {
 
   const updateTopicCounts = async () => {
     for (const [topicName, topicInfo] of Object.entries(topicsMap)) {
+      console.log(topicName);
       // Update all topics regardless of count
       await updateDoc(topicInfo.ref, {
         numQuestions: topicInfo.count

@@ -14,7 +14,6 @@ import Settings from "./Settings";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import MockExams from "./MockExams";
-import UploadQuestions from "./Upload";
 import Quiz from "./Quiz";
 
 const Dashboard = () => {
