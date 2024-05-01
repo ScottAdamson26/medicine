@@ -12,6 +12,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("All"); // New state for tracking the selected filter
 
+  
   const toggleSelectAll = (isChecked) => {
     if (isChecked) {
       setSelectedQuizzes(topics.map((topic) => topic.id));
@@ -48,7 +49,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
           "Adding Topic:",
           topic.name,
           "totalQuestions:",
-          topic.numQuestions
+          topic.totalQuestions
         ); // Log each addition
         return acc + topic.totalQuestions; // Ensure topic has 'numQuestions' field
       }

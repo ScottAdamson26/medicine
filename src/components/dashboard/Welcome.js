@@ -1,5 +1,5 @@
 import React from "react";
-import Doctor from "./doctorsim.png";
+import Doctor from "./doctorsim.webp";
 import { useAuth } from "../../AuthContext";
 
 const Welcome = () => {

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { db } from "../../firebase-config";
 import Papa from 'papaparse';
-import { collection, addDoc, getDocs, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc } from 'firebase/firestore';
 
 function UploadQuestions() {
+  console.log("started upload")
   const [file, setFile] = useState(null);
   const [topicsMap, setTopicsMap] = useState({});
 
@@ -30,16 +31,20 @@ function UploadQuestions() {
 
   const updateTopicCounts = async () => {
     for (const [topicName, topicInfo] of Object.entries(topicsMap)) {
-      if (topicInfo.count > 0) { // Only update topics that have new questions
-        await updateDoc(topicInfo.ref, {
-          numQuestions: topicInfo.count // Set the count of questions for each topic
-        });
-      }
+      // Update all topics regardless of count
+      await updateDoc(topicInfo.ref, {
+        numQuestions: topicInfo.count
+      });
     }
   };
 
   const uploadQuestions = async () => {
     if (!file) return;
+
+    // Reset topics count before processing new file
+    Object.keys(topicsMap).forEach(topicName => {
+      topicsMap[topicName].count = 0;
+    });
 
     Papa.parse(file, {
       header: true,
@@ -47,12 +52,11 @@ function UploadQuestions() {
         const questions = results.data;
         for (const question of questions) {
           const topicName = question.Topic || 'General';
-          console.log(topicName);
           if (!topicsMap[topicName]) {
-            console.error(`Topic '${topicName}' not found in the database.`);
-            return; // Stop processing if a topic is not found
+            console.error(`Topic '${topicName}' not found in the database.`, question);
+            continue; // Use continue instead of return to process other questions
           }
-
+    
           const formattedQuestion = {
             question: question.Question,
             prompt: question.Prompt,
@@ -67,13 +71,13 @@ function UploadQuestions() {
             explanation: question.Explanation,
           };
           await addDoc(collection(db, 'questions'), formattedQuestion);
-          topicsMap[topicName].count += 1; // Increment the count of questions for the topic
-          console.log(topicName + " count is " + topicsMap[topicName].count)
+          topicsMap[topicName].count += 1;
         }
-        await updateTopicCounts(); // Update the numQuestions field for each topic after all questions are uploaded
+        await updateTopicCounts();
         alert('All questions uploaded successfully!');
       },
     });
+    
   };
 
   return (

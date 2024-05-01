@@ -40,24 +40,31 @@ const Dashboard = () => {
     }
   }, [currentUser, hasActiveSubscription, navigate, name]);
 
-  // fetch topics on load
   useEffect(() => {
-    if (currentUser && hasActiveSubscription) {
-      const fetchTopics = async () => {
+    const fetchTopics = async () => {
+      const localTopics = localStorage.getItem('topics');
+      if (localTopics) {
+        setTopics(JSON.parse(localTopics)); // Load topics from local storage if available
+        console.log("fetched from cache")
+      } else {
         const querySnapshot = await getDocs(collection(db, "topics"));
-        const topicsArray = querySnapshot.docs.map((doc) => ({
+        const topicsArray = querySnapshot.docs.map(doc => ({
           id: doc.id,
           name: doc.data().name,
           totalQuestions: doc.data().numQuestions || 0,
-          correct: 0,
-          incorrect: 0,
+          correct: 0, // Assuming these are placeholders for a UI display
+          incorrect: 0, // Assuming these are placeholders for a UI display
         }));
+        localStorage.setItem('topics', JSON.stringify(topicsArray)); // Cache topics in local storage
         setTopics(topicsArray);
-      };
+      }
+    };
+  
+    if (currentUser && hasActiveSubscription) {
       fetchTopics();
     }
   }, [currentUser, hasActiveSubscription]);
-
+  
   // fetch mock exams on load
   useEffect(() => {
     if (currentUser && hasActiveSubscription) {
@@ -156,7 +163,6 @@ const Dashboard = () => {
               <>
                 <Profile name={userName} />
                 <Upgrade setSelectedNav={setSelectedNav} />
-
               </>
             )}
           </div>

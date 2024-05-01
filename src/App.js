@@ -15,6 +15,7 @@ import CheckoutForm from './components/register/CheckoutForm';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import SubscriptionSuccess from './components/register/SubscriptionSuccess';
+import LandingPage2 from './components/landing/LandingPage2';
 
 const stripePromise = loadStripe('your_stripe_public_key');
 
@@ -34,6 +35,8 @@ function AppInner() {
     <div className='bg-white dark:bg-white font-montserrat w-full'>
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/l" element={<LandingPage2 />} />
+
         <Route path="/register" element={<Register />} />
         <Route path="/pricing" element={<Pricing />} />
         <Route path="/sign-in" element={<SignIn />} />
