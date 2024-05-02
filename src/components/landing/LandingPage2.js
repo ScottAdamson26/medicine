@@ -79,11 +79,11 @@ function LandingPage2() {
         </div>
         
         {/* img that needs bled off the page in <md devices */}
-        <div className="h-full">
+        <div className="h-full  -mr-2">
           <img
             src={DoctorImage}
             alt="Doctor"
-            className="rounded-t-xl h-full object-cover object-left"
+            className="rounded-tl-xl md:rounded-t-xl h-full object-cover object-left"
           />
         </div>
       </div>
@@ -125,7 +125,7 @@ function LandingPage2() {
                   <p className="text-cyan-400 text-base md:text-lg lg: md-text-xl font-bold w-1/2">
                     All reviewed by doctors in the field
                   </p>
-                  <div className="overflow-hidden h-auto w-52 -mt-6 relative z-5">
+                  <div className="overflow-hidden h-auto w-52 -mt-6 relative z-5 fixed">
                     <img
                       src={Doctors}
                       alt="Doctors"
