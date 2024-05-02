@@ -38,7 +38,7 @@ function LandingPage2() {
       />
 
       {/* Constrained Main Content */}
-      <div className="mx-auto max-w-6xl w-full relative z-10 flex flex-col justify-between h-screen">
+      <div className="mx-auto max-w-6xl w-full relative z-10 flex flex-col justify-between h-screen overflow-hidden">
         <LandingNavBar />
 
         {/* Content Container */}
@@ -66,7 +66,7 @@ function LandingPage2() {
             </h2>
 
             <button
-              className="px-4 py-2 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full flex items-center text-white font-medium [text-shadow:_0_1px_5px_rgb(0_0_0_/_20%)] transition-all duration-500 ease-in-out hover:px-5 mx-auto mb-5"
+              className="px-4 py-2 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full flex items-center text-white font-medium [text-shadow:_0_1px_5px_rgb(0_0_0_/_20%)] transition-all duration-500 ease-in-out hover:px-5 mx-auto mb-10"
               onClick={() => (window.location.href = "/register")}
             >
               Get Started
@@ -83,12 +83,12 @@ function LandingPage2() {
           <img
             src={DoctorImage}
             alt="Doctor"
-            className="rounded-tl-xl md:rounded-t-xl h-full object-cover object-left"
-          />
+            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none md:rounded-tr-xl h-full object-cover object-left"
+            />
         </div>
       </div>
 
-      <div className="flex items-center justify-center bg-white my-20 md:my-32">
+      <div className="flex items-center justify-center bg-white mb-20 md:mt-20 ">
         <div className="w-full max-w-6xl">
           <div className="flex flex-col md:flex-row h-full">
             {" "}
