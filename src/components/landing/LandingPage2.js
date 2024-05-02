@@ -42,8 +42,8 @@ function LandingPage2() {
         <LandingNavBar />
 
         {/* Content Container */}
-        <div className="flex-grow flex flex-col justify-center items-center md:px-10">
-          <div className="text-center w-full md:mt-24">
+        <div className="flex-grow flex flex-col justify-center items-center md:pt-10">
+          <div className="text-center w-full mt-24">
             <button
               onClick={() => (window.location.href = "/register")}
               className="outline-dashed outline-1 text-xs font-semibold outline-red-500 rounded-full py-0.5 px-3 mb-5 text-red-500"
@@ -77,14 +77,13 @@ function LandingPage2() {
             </button>
           </div>
         </div>
-
-        {/* Image positioned at the bottom */}
-        <div className="w-full">
+        
+        {/* img that needs bled off the page in <md devices */}
+        <div className="h-full">
           <img
             src={DoctorImage}
             alt="Doctor"
-            className="w-full h-auto rounded-t-xl"
-            style={{ display: "block" }}
+            className="rounded-t-xl h-full object-cover object-left"
           />
         </div>
       </div>
@@ -208,33 +207,46 @@ function LandingPage2() {
           </div>
         </div>
       </div>
-      <div className=" flex flex-col justify-center items-center bg-white text-zinc-800 md:px-5 mb-28">
+      <div className=" flex flex-col justify-center items-center bg-white text-zinc-800 mb-28 w-full">
         <h1 className="text-lg font-bold text-cyan-400 text-center mb-20">
           PRICING
         </h1>
 
-        <div className="w-full px-5 lg:px-20 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:gap-20 gap-16">
+        <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:gap-20 gap-16">
           {/* Tier 1 - Free Plan */}
-          <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1 ">
-            <div className="bg-white rounded-lg flex flex-col w-full h-full w-72 lg:w-96 py-20 px-8">
+          <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1 mx-5 md:mx-0 md:ml-10">
+            <div className="bg-white rounded-lg flex flex-col w-full h-full py-20 px-8 md:px-12">
               <h2 className="text-xl font-bold mb-4">Free Plan</h2>
+              <div className="flex flex-row items-end mb-4 ">
+                {" "}
+                <h2 className=" font-semibold text-4xl mr-1 ">£0</h2>
+                <p className="opacity-60">/ month</p>
+              </div>
+
               <ul className="mb-4">
                 <li>✔ 20 trial questions</li>
                 <li className="opacity-30">✗ 4 Mock Exams</li>
                 <li className="opacity-30">✗ Pomodoro Study Timer</li>
               </ul>
               <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
-                Register
+              Get Started
+
               </button>
             </div>
           </div>
 
           {/* Tier 2 - Pro Plan (Most Popular) */}
-          <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1 md-0">
+          <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1 mx-5 md:mx-0 md:mr-10">
             <div className="bg-gradient-to-r from-blue-300 to-cyan-400 absolute -top-7 left-1/2 transform -translate-x-1/2 bg-blue-500 py-1 text-sm text-white rounded-t-xl inline-flex items-center justify-center w-full">
               Most Popular
             </div>
-            <div className="bg-white rounded-b-lg flex flex-col w-full h-full w-72 lg:w-96 py-20 px-8">
+            <div className="bg-white rounded-b-lg flex flex-col w-full py-20 px-8 md:px-12">
+                <div>
+              <button className="inline md:hidden outline-dashed outline-1 text-xs mb-4 font-semibold outline-red-500 rounded-full py-0.5 px-3 text-red-500">
+                <FontAwesomeIcon icon={faCircle} beatFade className="mr-2" />
+                50% OFF!
+              </button>
+                </div>
               <div className="flex flex-row items-center mb-4 ">
                 {" "}
                 <h2 className="text-xl font-bold">Pro Plan</h2>
@@ -242,6 +254,16 @@ function LandingPage2() {
                   icon={faBolt}
                   className="text-yellow-400 ml-2"
                 />
+                <button className=" hidden md:inline outline-dashed flex items-center outline-1 text-xs font-semibold outline-red-500 rounded-full py-0.5 px-3 ml-2 text-red-500">
+                <FontAwesomeIcon icon={faCircle} beatFade className="mr-2 align-middle tra" />
+                  50% OFF!
+                </button>
+              </div>
+
+              <div className="flex flex-row items-end mb-4 mr-1">
+                {" "}
+                <h2 className=" font-semibold text-4xl ">£4.97</h2>
+                <p className="opacity-60">/ month</p>
               </div>
 
               <ul className="mb-4">
@@ -250,7 +272,7 @@ function LandingPage2() {
                 <li>✔ Pomodoro Study Timer</li>
               </ul>
               <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
-                Register
+                Get Started
               </button>
             </div>
           </div>
