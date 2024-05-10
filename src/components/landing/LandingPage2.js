@@ -1,6 +1,7 @@
 import React from "react";
 import LandingNavBar from "./LandingNavBar";
-import DoctorImage from "./dashboard3.webp";
+import DashboardImage from "./dashboard3.webp";
+import DashboardImageSmall from "./dashboard3small.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCircle } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -77,14 +78,20 @@ function LandingPage2() {
             </button>
           </div>
         </div>
-        
+
         {/* img that needs bled off the page in <md devices */}
-        <div className="h-full  -mr-2">
+        <div className="h-full -mr-2">
           <img
-            src={DoctorImage}
+            src={DashboardImageSmall}
             alt="Doctor"
-            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none md:rounded-tr-xl h-full object-cover object-left"
-            />
+            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none md:hidden md:rounded-tr-xl h-full object-cover object-left"
+          />
+
+          <img
+            src={DashboardImage}
+            alt="Doctor"
+            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none hidden md:block md:rounded-tr-xl h-full object-cover object-left"
+          />
         </div>
       </div>
 
@@ -229,8 +236,7 @@ function LandingPage2() {
                 <li className="opacity-30">✗ Pomodoro Study Timer</li>
               </ul>
               <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
-              Get Started
-
+                Get Started
               </button>
             </div>
           </div>
@@ -241,12 +247,12 @@ function LandingPage2() {
               Most Popular
             </div>
             <div className="bg-white rounded-b-lg flex flex-col w-full py-20 px-8 md:px-12">
-                <div>
-              <button className="inline md:hidden outline-dashed outline-1 text-xs mb-4 font-semibold outline-red-500 rounded-full py-0.5 px-3 text-red-500">
-                <FontAwesomeIcon icon={faCircle} beatFade className="mr-2" />
-                50% OFF!
-              </button>
-                </div>
+              <div>
+                <button className="inline md:hidden outline-dashed outline-1 text-xs mb-4 font-semibold outline-red-500 rounded-full py-0.5 px-3 text-red-500">
+                  <FontAwesomeIcon icon={faCircle} beatFade className="mr-2" />
+                  50% OFF!
+                </button>
+              </div>
               <div className="flex flex-row items-center mb-4 ">
                 {" "}
                 <h2 className="text-xl font-bold">Pro Plan</h2>
@@ -255,7 +261,11 @@ function LandingPage2() {
                   className="text-yellow-400 ml-2"
                 />
                 <button className=" hidden md:inline outline-dashed flex items-center outline-1 text-xs font-semibold outline-red-500 rounded-full py-0.5 px-3 ml-2 text-red-500">
-                <FontAwesomeIcon icon={faCircle} beatFade className="mr-2 align-middle tra" />
+                  <FontAwesomeIcon
+                    icon={faCircle}
+                    beatFade
+                    className="mr-2 align-middle tra"
+                  />
                   50% OFF!
                 </button>
               </div>
