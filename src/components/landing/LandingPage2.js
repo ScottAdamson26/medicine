@@ -1,7 +1,7 @@
 import React from "react";
 import LandingNavBar from "./LandingNavBar";
 import DashboardImage from "./dashboard3.webp";
-import DashboardImageSmall from "./dashboard3small.webp";
+import DashboardImageSmall from "./dashboard3small2.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCircle } from "@fortawesome/free-solid-svg-icons";
 import {
