@@ -25,8 +25,19 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
-  const [currentTopicIds, setCurrentTopicIds] = useState([]);
+  const [currentTopicIds, setCurrentTopicIdsState] = useState([]);
 
+  const setCurrentTopicIds = (selectedIds) => {
+    console.log("setCurrentTopicIds called with IDs:", selectedIds);
+    const updatedTopicDetails = selectedIds.map(id => {
+      const topic = topics.find(t => t.id === id);
+      return { id: id, totalQuestions: topic ? topic.totalQuestions : 0 };
+    });
+    
+    console.log("Updated Topic Selection:", updatedTopicDetails);
+    setCurrentTopicIdsState(updatedTopicDetails);
+  };
+  
   useEffect(() => {
     if (!currentUser || !hasActiveSubscription) {
       console.log(
@@ -100,6 +111,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex bg-neutral-100 min-h-screen overflow-x-hidden">
+      
       {showModal && <UserNameModal user={currentUser} onClose={closeModal} />}
       <Sidebar selectedNav={selectedNav} onNavChange={handleNavChange} />
       <div className="flex-1 w-full">

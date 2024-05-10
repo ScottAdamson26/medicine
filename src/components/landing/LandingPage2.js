@@ -52,7 +52,7 @@ function LandingPage2() {
               BETA LIVE! GET 50% OFF NOW
             </button>
 
-            <h1 className="text-4xl md:text-7xl font-bold text-zinc-800">
+            <h1 className="text-4xl md:text-7xl font-bold text-zinc-800 md:text-balance">
               The Ultimate{" "}
               <span className="bg-gradient-to-r ml-4 md:ml-0 from-blue-300 to-cyan-400 inline-block text-transparent bg-clip-text">
                 UKMLA
@@ -144,7 +144,7 @@ function LandingPage2() {
           <div className="text-cyan-400 text-xs font-bold">
             <p>WHAT OUR USERS SAY</p>
             <p className="mt-2 font-semibold text-balance text-2xl">
-              "Studying doesn't have to be boring. MedMaster is fun to use and
+              "Studying doesn't have to be boring. Road2Doctor is fun to use and
               makes revising less of a chore."
             </p>
             <p className="text-xs text-neutral-300 mt-2">

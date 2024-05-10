@@ -24,7 +24,7 @@ function LandingNavBar() {
     <div className={`fixed px-2 lg:px-0 py-3 w-full top-0 left-0 right-0 z-50`}>
       <nav className={`text-white py-3 w-full rounded-full mx-auto max-w-6xl  ${isScrolled ? 'shadow-lg bg-white' : ''}`}>
         <div className="mx-auto flex justify-between items-center px-5 text-cyan-400">
-          <div className="font-bold text-xl ">MedMaster<span className='text-2xl'> 🎓</span></div>
+          <div className="font-bold text-xl "><span className='text-2xl'> 🩺</span> Road2Doctor</div>
           <div>
             {/* Use hidden to hide on small screens, and md:inline-flex or md:block to show on medium screens and up */}
             <a href="/sign-in" className="inline-flex m-0 md:mr-8 font-medium" onClick={() => {window.location.href = '/sign-in';}}>Sign in</a>

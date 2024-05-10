@@ -40,23 +40,15 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   };
 
   const getTotalQuestions = () => {
-    console.log("Selected Quizzes IDs: ", selectedQuizzes); // Log the selected quiz IDs
-    console.log("Filtered Topics Data: ", filteredTopics()); // Log filtered topics
-
+    
     const total = filteredTopics().reduce((acc, topic) => {
       if (selectedQuizzes.includes(topic.id)) {
-        console.log(
-          "Adding Topic:",
-          topic.name,
-          "totalQuestions:",
-          topic.totalQuestions
-        ); // Log each addition
+       
         return acc + topic.totalQuestions; // Ensure topic has 'numQuestions' field
       }
       return acc;
     }, 0);
 
-    console.log("Total Questions:", total); // Log the total number of questions calculated
     return total;
   };
 
