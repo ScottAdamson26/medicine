@@ -175,15 +175,7 @@ function LandingPage2() {
           PERKS{" "}
         </h1>
         <div className="grid lg:grid-cols-3 grid-rows-3 lg:grid-rows-1 gap-10 lg:gap-20 w-full">
-          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py-28 px-20 lg:px-5 text-balance rounded-lg shadow-custom-lg">
-            <div className="w-16 h-16 flex justify-center items-center mb-10  bg-gradient-to-r from-purple-200 to-fuchsia-300 rounded-lg shadow-custom-lg">
-              <FontAwesomeIcon icon={faClock} className="text-white text-3xl" />
-            </div>
-            <p className="text-center text-grey opacity-40 font-semibold">
-              Pomodoro study timer
-            </p>
-          </div>
-          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py- px-5 text-balance rounded-lg shadow-custom-lg">
+          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py-28 px-10 text-balance rounded-lg shadow-custom-lg">
             <div className="w-16 h-16 flex justify-center items-center mb-10  bg-gradient-to-r from-green-300 to-lime-300 bg-green-200 rounded-lg shadow-custom-lg">
               <FontAwesomeIcon
                 icon={faChartSimple}
@@ -194,7 +186,7 @@ function LandingPage2() {
               Detailed stats tracking{" "}
             </p>
           </div>
-          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py- px-10 text-balance rounded-lg shadow-custom-lg">
+          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py-28 px-10 text-balance rounded-lg shadow-custom-lg">
             <div className="w-16 h-16 flex justify-center items-center mb-10  bg-gradient-to-r from-orange-300 to-rose-300 rounded-lg shadow-custom-lg">
               <FontAwesomeIcon
                 icon={faGraduationCap}
@@ -203,6 +195,14 @@ function LandingPage2() {
             </div>
             <p className=" text-grey opacity-40 font-semibold text-center">
               Timed mock exam papers{" "}
+            </p>
+          </div>
+          <div className="flex flex-col font-base justify-center items-center outline outline-1 outline-cyan-400 py-28 px-10 lg:px-5 text-balance rounded-lg shadow-custom-lg">
+            <div className="w-16 h-16 flex justify-center items-center mb-10  bg-gradient-to-r from-purple-200 to-fuchsia-300 rounded-lg shadow-custom-lg">
+              <FontAwesomeIcon icon={faClock} className="text-white text-3xl" />
+            </div>
+            <p className="text-center text-grey opacity-40 font-semibold">
+              Pomodoro study timer
             </p>
           </div>
         </div>
