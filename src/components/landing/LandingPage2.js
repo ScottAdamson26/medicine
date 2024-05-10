@@ -1,7 +1,6 @@
 import React from "react";
 import LandingNavBar from "./LandingNavBar";
 import DashboardImage from "./dashboard3.webp";
-import DashboardImageSmall from "./dashboard3small2.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faCircle } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -81,16 +80,11 @@ function LandingPage2() {
 
         {/* img that needs bled off the page in <md devices */}
         <div className="h-full -mr-2">
-          <img
-            src={DashboardImageSmall}
-            alt="Doctor"
-            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none md:hidden md:rounded-tr-xl h-full object-cover object-left"
-          />
-
+    
           <img
             src={DashboardImage}
             alt="Doctor"
-            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none hidden md:block md:rounded-tr-xl h-full object-cover object-left"
+            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none  md:rounded-tr-xl h-full object-cover object-left"
           />
         </div>
       </div>
