@@ -31,7 +31,7 @@ function LandingNavBar() {
           <div className="flex items-center font-bold text-xl">
             <img src={Logo} alt="Logo" className="h-12 mr-1" />{" "}
             {/* Adjust the h-6 class to fit the height of your text */}
-            Road2Doctor
+            CliniQuiz
           </div>
           <div>
             {/* Use hidden to hide on small screens, and md:inline-flex or md:block to show on medium screens and up */}

@@ -8,7 +8,7 @@ import {
   where,
   limit,
   setDoc,
-  arrayUnion,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { useAuth } from "../../AuthContext";
@@ -22,74 +22,114 @@ const Quiz = ({ currentTopicIds }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [incorrectIndex, setIncorrectIndex] = useState(null);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const [initialAttemptedQuestions, setInitialAttemptedQuestions] = useState(0); // Track initial attempted questions
+  const [batchCount, setBatchCount] = useState(0); // Track the batch count
 
   useEffect(() => {
-    let total = 0;
-    const fetchQuestions = async () => {
-      if (currentTopicIds.length > 0) {
-        let allQuestions = [];
-        for (const { id } of currentTopicIds) {
-          const topicRef = doc(db, "topics", id);
-          const questionsRef = collection(db, "questions");
-          const q = query(
-            questionsRef,
-            where("topicReference", "==", topicRef),
-            limit(15)
-          );
+    if (currentUser) {
+      fetchQuestions(); // Initial fetch
+    }
+  }, [currentTopicIds, currentUser]);
 
-          try {
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-              allQuestions.push(
-                ...querySnapshot.docs.map((doc) => ({
-                  id: doc.id,
-                  ...doc.data(),
-                  answers: doc.data().options.map((option) => ({
-                    text: option.answer,
-                    correct: option.isCorrect,
-                  })),
-                }))
-              );
-            }
-          } catch (error) {
-            console.error(`Error fetching questions for topic ${id}: `, error);
-          }
+  const fetchQuestions = async (additional = false) => {
+    if (currentTopicIds.length > 0 && currentUser) {
+      const userProgressRef = doc(db, "userProgress", currentUser.uid);
+
+      // Fetch answered questions
+      const answeredQuestionsRef = collection(userProgressRef, "answeredQuestions");
+      const answeredSnapshot = await getDocs(answeredQuestionsRef);
+      let answeredQuestionIds = answeredSnapshot.docs.map((doc) => doc.id);
+
+      const questionsRef = collection(db, "questions");
+
+      let totalQuestionsCount = 0;
+      let totalAttemptedCount = 0;
+
+      const queries = currentTopicIds.map(async ({ id }) => {
+        const topicDoc = await getDoc(doc(db, "topics", id));
+        if (topicDoc.exists()) {
+          totalQuestionsCount += topicDoc.data().numQuestions;
         }
 
-        if (allQuestions.length > 0) {
-          setQuestions(allQuestions);
-          setCheckedState(
-            new Array(allQuestions[0].answers.length).fill(false)
-          );
-          setCurrentQuestionIndex(0);
+        const userProgressSnapshot = await getDoc(userProgressRef);
+        const topicProgress = userProgressSnapshot.data().topicProgress || [];
+        const topicData = topicProgress.find((tp) => tp.topicId === id);
+        if (topicData) {
+          totalAttemptedCount += topicData.attempts;
         }
-        // Calculate the total number of questions for the display
-        total += currentTopicIds.reduce(
-          (acc, topic) => acc + topic.totalQuestions,
-          0
+
+        return query(
+          questionsRef,
+          where("topicReference", "==", doc(db, "topics", id)),
+          limit(300 * (batchCount + 1)) // Fetch questions in batches of 300
         );
-        setTotalQuestions(total);
+      });
+
+      const resolvedQueries = await Promise.all(queries);
+      const questionDocs = await Promise.all(
+        resolvedQueries.map((q) => getDocs(q))
+      );
+
+      let allQuestions = [];
+      questionDocs.forEach((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          allQuestions.push({
+            id: doc.id,
+            topicId: doc.data().topicReference.id,
+            ...doc.data(),
+            answers: doc.data().options.map((option) => ({
+              text: option.answer,
+              correct: option.isCorrect,
+            })),
+          });
+        });
+      });
+
+      const newQuestions = allQuestions.filter(
+        (question) => !answeredQuestionIds.includes(question.id)
+      );
+
+      setTotalQuestions(totalQuestionsCount);
+      setInitialAttemptedQuestions(totalAttemptedCount);
+
+      if (additional) {
+        setQuestions((prevQuestions) => [...prevQuestions, ...newQuestions]);
+      } else {
+        setQuestions(newQuestions);
       }
-    };
+      setCheckedState(new Array(newQuestions[0]?.answers.length || 0).fill(false));
+      setCurrentQuestionIndex(0);
 
-    fetchQuestions();
-  }, [currentTopicIds]);
+      console.log("Initial Fetch: ");
+      console.log("Total Questions: ", totalQuestionsCount);
+      console.log("Initial Attempted Questions: ", totalAttemptedCount);
+      console.log("Current Question Index: ", 0);
+    }
+  };
 
+  // Handle next question navigation
   const handleNextQuestion = () => {
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < questions.length) {
       setCurrentQuestionIndex(nextIndex);
       setCheckedState(
         new Array(questions[nextIndex].answers.length).fill(false)
-      ); // Reset the checked state for the new answers array
+      );
       setSubmitted(false);
       setSelectedIndex(null);
       setIncorrectIndex(null);
+
+      // Fetch more questions if we've reached the end of the current batch
+      if (nextIndex === questions.length - 10) {
+        setBatchCount((prevBatchCount) => prevBatchCount + 1);
+        fetchQuestions(true); // Fetch additional questions
+      }
     } else {
-      // If there are no more questions, you might want to handle it differently in the future,
-      // but for now, you can do nothing or display a message.
       console.log("No more questions to display.");
     }
+
+    console.log("Next Question: ");
+    console.log("Current Question Index: ", nextIndex);
   };
 
   const handleCheckboxChange = (index) => {
@@ -100,29 +140,71 @@ const Quiz = ({ currentTopicIds }) => {
     }
   };
 
-  const updateUserProgress = async (questionId, wasCorrect) => {
+  const updateUserProgress = async (questionId, wasCorrect, topicId) => {
     if (!currentUser) {
       console.error("No user logged in");
       return; // Prevents execution if there is no logged-in user
     }
 
+    // Reference to user progress document
     const userProgressRef = doc(db, "userProgress", currentUser.uid);
 
+    // Reference for the answered question in the subcollection
+    const questionProgressRef = doc(
+      userProgressRef,
+      "answeredQuestions",
+      questionId
+    );
+
+    // Update data for the answered question
     const questionUpdate = {
-      questionId: questionId,
       outcome: wasCorrect ? "correct" : "incorrect",
       timestamp: new Date(),
     };
 
     try {
+      // Retrieve current user progress
+      const userProgressSnapshot = await getDoc(userProgressRef);
+      let topicProgress =
+        userProgressSnapshot.exists() &&
+        userProgressSnapshot.data().topicProgress
+          ? userProgressSnapshot.data().topicProgress
+          : [];
+
+      // Find or initialize the topic progress data
+      const index = topicProgress.findIndex((tp) => tp.topicId === topicId);
+      if (index !== -1) {
+        // Update existing topic progress
+        topicProgress[index].attempts += 1;
+        if (wasCorrect) {
+          topicProgress[index].correct += 1;
+        }
+      } else {
+        // Create new topic progress entry
+        topicProgress.push({
+          topicId: topicId,
+          attempts: 1,
+          correct: wasCorrect ? 1 : 0,
+        });
+      }
+
+      // Update or create the user progress document with new data
       await setDoc(
         userProgressRef,
         {
-          answeredQuestions: arrayUnion(questionUpdate),
+          topicProgress: topicProgress,
         },
         { merge: true }
       );
-      console.log("User progress updated or created.");
+
+      // Set the document for the answered question
+      await setDoc(questionProgressRef, questionUpdate, { merge: true });
+
+      console.log(
+        "User progress updated or created for question and topic:",
+        questionId,
+        topicId
+      );
     } catch (error) {
       console.error("Error updating user progress: ", error);
     }
@@ -134,11 +216,11 @@ const Quiz = ({ currentTopicIds }) => {
       return;
     }
 
-    const correctIndex = questions[currentQuestionIndex].answers.findIndex(
+    const currentQuestion = questions[currentQuestionIndex];
+    const correctIndex = currentQuestion.answers.findIndex(
       (answer) => answer.correct
     );
-    const wasCorrect =
-      questions[currentQuestionIndex].answers[selectedIndex].correct;
+    const wasCorrect = currentQuestion.answers[selectedIndex].correct;
 
     if (!wasCorrect) {
       setIncorrectIndex(selectedIndex); // Mark the selected index as incorrect
@@ -146,12 +228,18 @@ const Quiz = ({ currentTopicIds }) => {
       setIncorrectIndex(null); // Reset incorrect index because the correct answer was selected
     }
 
-    setCheckedState(checkedState.map((_, i) => i === correctIndex)); // Ensure only the correct answer is marked checked
-    setSelectedIndex(selectedIndex); // Always retain the selected index as user's choice
+    setCheckedState(checkedState.map((_, i) => i === correctIndex));
+    setSelectedIndex(selectedIndex);
     setSubmitted(true);
 
-    // Update user progress in Firebase
-    updateUserProgress(questions[currentQuestionIndex].id, wasCorrect);
+    console.log("Submit Answer: ");
+    console.log("Selected Index: ", selectedIndex);
+    console.log("Correct Index: ", correctIndex);
+    console.log("Was Correct: ", wasCorrect);
+    console.log("Current Question Index: ", currentQuestionIndex);
+
+    // Pass the topic ID of the current question to the progress update function
+    updateUserProgress(currentQuestion.id, wasCorrect, currentQuestion.topicId);
   };
 
   if (!questions.length) {
@@ -164,7 +252,7 @@ const Quiz = ({ currentTopicIds }) => {
     <div className="flex flex-col w-full bg-white rounded-xl shadow-lg p-8 mb-4">
       <div className="w-full justify-between text-cyan-400 text-xs">
         <h1>
-        Question {currentQuestionIndex + 1} of {totalQuestions}
+          Question {initialAttemptedQuestions + currentQuestionIndex + 1} of {totalQuestions}
         </h1>
       </div>
       <div className="mt-2 text-base font-semibold">
