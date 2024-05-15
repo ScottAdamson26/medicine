@@ -180,7 +180,7 @@ const Dashboard = () => {
             )}
             {selectedNav === "Profile" && !showQuiz && (
               <>
-                <Profile />
+                <Profile topics={topicProgress} name={userName}/>
                 <Upgrade />
               </>
             )}
@@ -196,7 +196,7 @@ const Dashboard = () => {
             <Timer />
             {!(selectedNav === "Profile") && (
               <>
-                <Profile name={userName} />
+                <Profile topics={topicProgress} name={userName}/>
                 <Upgrade setSelectedNav={setSelectedNav} />
               </>
             )}
