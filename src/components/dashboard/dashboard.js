@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [currentTopicIds, setCurrentTopicIdsState] = useState([]);
   const [topicProgress, setTopicProgress] = useState([]);
+  const [refreshTopics, setRefreshTopics] = useState(false); // New state to trigger refresh
 
   const setCurrentTopicIds = (selectedIds) => {
     // Create a new array of objects containing the topic ID and the total questions.
@@ -38,6 +39,11 @@ const Dashboard = () => {
     console.log("Updated Topic Selection:", updatedTopicDetails);
     setCurrentTopicIdsState(updatedTopicDetails);
   };
+
+  const toggleRefreshTopics = () => {
+    setRefreshTopics((prev) => !prev);
+  };
+
   useEffect(() => {
     const fetchTopicProgress = async () => {
       if (currentUser) {
@@ -53,7 +59,7 @@ const Dashboard = () => {
     };
 
     fetchTopicProgress();
-  }, [currentUser]);
+  }, [currentUser, refreshTopics]); // Depend on refreshTopics
 
   useEffect(() => {
     if (!currentUser || !hasActiveSubscription) {
@@ -86,7 +92,7 @@ const Dashboard = () => {
     if (currentUser && hasActiveSubscription) {
       fetchTopics();
     }
-  }, [currentUser, hasActiveSubscription, topicProgress]);
+  }, [currentUser, hasActiveSubscription, topicProgress, refreshTopics]); // Depend on refreshTopics
   
 
   // fetch mock exams on load
@@ -163,6 +169,7 @@ const Dashboard = () => {
                 currentTopicIds={currentTopicIds}
                 setShowQuiz={setShowQuiz}
                 setSelectedNav={setSelectedNav}
+                toggleRefreshTopics={toggleRefreshTopics} // Pass the function to Quiz
               />
             )}
             {selectedNav === "Quizzes" && !showQuiz && (

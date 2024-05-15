@@ -15,7 +15,7 @@ import { useAuth } from "../../AuthContext";
 import spinnerAnimation from "./spinner.json";
 import Lottie from "react-lottie";
 
-const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav }) => {
+const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopics }) => {
   const { currentUser } = useAuth(); // This fetches the current user from the AuthContext
   const [questions, setQuestions] = useState([]); // Array of questions
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Index of the current question
@@ -259,6 +259,7 @@ const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav }) => {
 
   const handleEndQuiz = () => {
     setShowQuiz(false);
+    toggleRefreshTopics(); // Call the function to refresh the topics
     setSelectedNav("Dashboard");
   };
 
