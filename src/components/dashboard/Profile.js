@@ -29,9 +29,7 @@ const Profile = ({ topics }) => {
     };
 
     calculateStats();
-    console.log("here are the results " + totalQuestions);
-    console.log("here are the topics " + topics);
-  }, [topics]);
+  }, [topics]); // Only `topics` should be included here
 
   return (
     <div className="flex flex-col items-center justify-center w-full bg-white rounded-xl shadow-lg py-8 mb-4 relative">
