@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 import Checkbox from "./Checkbox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleUp,
-  faAngleDown,
-  faAngleRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleUp, faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   const [selectedQuizzes, setSelectedQuizzes] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("All"); // New state for tracking the selected filter
 
-  
   const toggleSelectAll = (isChecked) => {
     if (isChecked) {
       setSelectedQuizzes(topics.map((topic) => topic.id));
@@ -40,11 +35,9 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   };
 
   const getTotalQuestions = () => {
-    
     const total = filteredTopics().reduce((acc, topic) => {
       if (selectedQuizzes.includes(topic.id)) {
-       
-        return acc + topic.totalQuestions; // Ensure topic has 'numQuestions' field
+        return acc + topic.totalQuestions; // Ensure topic has 'totalQuestions' field
       }
       return acc;
     }, 0);
@@ -56,12 +49,12 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
     switch (currentFilter) {
       case "Uncompleted":
         return topics.filter(
-          (topic) => topic.totalQuestions - topic.correct - topic.incorrect > 0
+          (topic) => topic.totalQuestions - topic.correct - (topic.attempts - topic.correct) > 0
         );
       case "Completed":
         return topics.filter(
           (topic) =>
-            topic.totalQuestions - topic.correct - topic.incorrect === 0
+            topic.totalQuestions - topic.correct - (topic.attempts - topic.correct) === 0
         );
       default:
         return topics; // Default or 'All' filter
@@ -71,9 +64,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   // Function to determine button style
   const buttonStyle = (filter) => {
     return `px-2 py-1 m-1 ${
-      currentFilter === filter
-        ? "bg-cyan-100 text-cyan-500"
-        : "bg-gray-100 text-zinc-400"
+      currentFilter === filter ? "bg-cyan-100 text-cyan-500" : "bg-gray-100 text-zinc-400"
     } rounded-md text-xs`;
   };
 
@@ -101,22 +92,13 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
           )}
         </div>
         <div className="font-regular flex flex-row items-end">
-          <button
-            className={buttonStyle("All")}
-            onClick={() => handleFilterChange("All")}
-          >
+          <button className={buttonStyle("All")} onClick={() => handleFilterChange("All")}>
             All
           </button>
-          <button
-            className={buttonStyle("Uncompleted")}
-            onClick={() => handleFilterChange("Uncompleted")}
-          >
+          <button className={buttonStyle("Uncompleted")} onClick={() => handleFilterChange("Uncompleted")}>
             Uncompleted
           </button>
-          <button
-            className={buttonStyle("Completed")}
-            onClick={() => handleFilterChange("Completed")}
-          >
+          <button className={buttonStyle("Completed")} onClick={() => handleFilterChange("Completed")}>
             Completed
           </button>
         </div>
@@ -153,8 +135,9 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
         .map((topic) => {
           const total = topic.totalQuestions;
           const correct = topic.correct;
-          const incorrect = topic.incorrect;
-          const unanswered = total - (correct + incorrect);
+          const attempts = topic.attempts;
+          const incorrect = attempts - correct;
+          const unanswered = total - attempts;
           const correctPercentage = (correct / total) * 100;
           const incorrectPercentage = (incorrect / total) * 100;
           const unansweredPercentage = (unanswered / total) * 100;

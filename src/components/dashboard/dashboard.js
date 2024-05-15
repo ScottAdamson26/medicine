@@ -4,7 +4,7 @@ import Quizzes from "./Quizzes";
 import Welcome from "./Welcome";
 import TopNavigation from "./TopNavigation";
 import Continue from "./Continue";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import UserNameModal from "./UserNameModal";
 import Timer from "./Timer";
@@ -26,18 +26,35 @@ const Dashboard = () => {
   const [exams, setExams] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
   const [currentTopicIds, setCurrentTopicIdsState] = useState([]);
+  const [topicProgress, setTopicProgress] = useState([]);
 
   const setCurrentTopicIds = (selectedIds) => {
-    console.log("setCurrentTopicIds called with IDs:", selectedIds);
-    const updatedTopicDetails = selectedIds.map(id => {
-      const topic = topics.find(t => t.id === id);
+    // Create a new array of objects containing the topic ID and the total questions.
+    const updatedTopicDetails = selectedIds.map((id) => {
+      const topic = topics.find((t) => t.id === id);
       return { id: id, totalQuestions: topic ? topic.totalQuestions : 0 };
     });
-    
+
     console.log("Updated Topic Selection:", updatedTopicDetails);
     setCurrentTopicIdsState(updatedTopicDetails);
   };
-  
+  useEffect(() => {
+    const fetchTopicProgress = async () => {
+      if (currentUser) {
+        const userProgressRef = doc(db, "userProgress", currentUser.uid);
+        const userProgressSnapshot = await getDoc(userProgressRef);
+        if (userProgressSnapshot.exists()) {
+          const topicProgressData =
+            userProgressSnapshot.data().topicProgress || [];
+          setTopicProgress(topicProgressData);
+          console.log("Topic Progress:", topicProgressData);
+        }
+      }
+    };
+
+    fetchTopicProgress();
+  }, [currentUser]);
+
   useEffect(() => {
     if (!currentUser || !hasActiveSubscription) {
       console.log(
@@ -52,29 +69,26 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchTopics = async () => {
-      const localTopics = localStorage.getItem('topics');
-      if (localTopics) {
-        setTopics(JSON.parse(localTopics)); // Load topics from local storage if available
-        console.log("fetched from cache")
-      } else {
-        const querySnapshot = await getDocs(collection(db, "topics"));
-        const topicsArray = querySnapshot.docs.map(doc => ({
+      const querySnapshot = await getDocs(collection(db, "topics"));
+      const topicsArray = querySnapshot.docs.map(doc => {
+        const progress = topicProgress.find(tp => tp.topicId === doc.id);
+        return {
           id: doc.id,
           name: doc.data().name,
-          totalQuestions: doc.data().numQuestions || 0,
-          correct: 0, // Assuming these are placeholders for a UI display
-          incorrect: 0, // Assuming these are placeholders for a UI display
-        }));
-        localStorage.setItem('topics', JSON.stringify(topicsArray)); // Cache topics in local storage
-        setTopics(topicsArray);
-      }
+          totalQuestions: doc.data().numQuestions || 1,
+          correct: progress ? progress.correct : 0,
+          attempts: progress ? progress.attempts : 0,
+        };
+      });
+      setTopics(topicsArray);
     };
   
     if (currentUser && hasActiveSubscription) {
       fetchTopics();
     }
-  }, [currentUser, hasActiveSubscription]);
+  }, [currentUser, hasActiveSubscription, topicProgress]);
   
+
   // fetch mock exams on load
   useEffect(() => {
     if (currentUser && hasActiveSubscription) {
@@ -111,7 +125,6 @@ const Dashboard = () => {
 
   return (
     <div className="flex bg-neutral-100 min-h-screen overflow-x-hidden">
-      
       {showModal && <UserNameModal user={currentUser} onClose={closeModal} />}
       <Sidebar selectedNav={selectedNav} onNavChange={handleNavChange} />
       <div className="flex-1 w-full">
@@ -136,22 +149,33 @@ const Dashboard = () => {
                 <div className="mb-4">
                   {" "}
                   {/* Margin bottom for spacing, adjust if needed */}
-                  <Quizzes topics={topics} isTruncated={true} setShowQuiz={setShowQuiz} setCurrentTopicIds={setCurrentTopicIds}/>
-
+                  <Quizzes
+                    topics={topics}
+                    isTruncated={true}
+                    setShowQuiz={setShowQuiz}
+                    setCurrentTopicIds={setCurrentTopicIds}
+                  />
                 </div>
               </>
             )}
-            { showQuiz && (
-              <Quiz currentTopicIds={currentTopicIds}  />
-            )
-            }
+            {showQuiz && (
+              <Quiz
+                currentTopicIds={currentTopicIds}
+                setShowQuiz={setShowQuiz}
+                setSelectedNav={setSelectedNav}
+              />
+            )}
             {selectedNav === "Quizzes" && !showQuiz && (
               <div className="mb-4">
-                <Quizzes topics={topics} isTruncated={false} setShowQuiz={setShowQuiz} setCurrentTopicIds={setCurrentTopicIds}/>
-
+                <Quizzes
+                  topics={topics}
+                  isTruncated={false}
+                  setShowQuiz={setShowQuiz}
+                  setCurrentTopicIds={setCurrentTopicIds}
+                />
               </div>
             )}
-            {selectedNav === "Mock Exams" && !showQuiz &&  (
+            {selectedNav === "Mock Exams" && !showQuiz && (
               <MockExams exams={exams} isTruncated={false} />
             )}
             {selectedNav === "Profile" && !showQuiz && (

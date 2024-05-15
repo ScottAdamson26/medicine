@@ -12,8 +12,10 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { useAuth } from "../../AuthContext";
+import spinnerAnimation from "./spinner.json";
+import Lottie from "react-lottie";
 
-const Quiz = ({ currentTopicIds }) => {
+const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav }) => {
   const { currentUser } = useAuth(); // This fetches the current user from the AuthContext
   const [questions, setQuestions] = useState([]); // Array of questions
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Index of the current question
@@ -31,7 +33,10 @@ const Quiz = ({ currentTopicIds }) => {
         const userProgressRef = doc(db, "userProgress", currentUser.uid);
 
         // Fetch answered questions
-        const answeredQuestionsRef = collection(userProgressRef, "answeredQuestions");
+        const answeredQuestionsRef = collection(
+          userProgressRef,
+          "answeredQuestions"
+        );
         const answeredSnapshot = await getDocs(answeredQuestionsRef);
         let answeredQuestionIds = answeredSnapshot.docs.map((doc) => doc.id);
 
@@ -92,7 +97,9 @@ const Quiz = ({ currentTopicIds }) => {
         } else {
           setQuestions(newQuestions);
         }
-        setCheckedState(new Array(newQuestions[0]?.answers.length || 0).fill(false));
+        setCheckedState(
+          new Array(newQuestions[0]?.answers.length || 0).fill(false)
+        );
         setCurrentQuestionIndex(0);
 
         console.log("Initial Fetch: ");
@@ -137,6 +144,15 @@ const Quiz = ({ currentTopicIds }) => {
       setSelectedIndex(index);
       setIncorrectIndex(null);
     }
+  };
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: spinnerAnimation,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
 
   const updateUserProgress = async (questionId, wasCorrect, topicId) => {
@@ -241,8 +257,18 @@ const Quiz = ({ currentTopicIds }) => {
     updateUserProgress(currentQuestion.id, wasCorrect, currentQuestion.topicId);
   };
 
+  const handleEndQuiz = () => {
+    setShowQuiz(false);
+    setSelectedNav("Dashboard");
+  };
+
   if (!questions.length) {
-    return <div>Loading questions...</div>;
+    return (
+      <div className="flex flex-col justify-center items-center w-full bg-white rounded-xl shadow-lg p-8 mb-4 h-4/5">
+        <Lottie options={defaultOptions} height={28} width={28} />
+      </div>
+    );
+    
   }
 
   const currentQuestion = questions[currentQuestionIndex];
@@ -251,7 +277,8 @@ const Quiz = ({ currentTopicIds }) => {
     <div className="flex flex-col w-full bg-white rounded-xl shadow-lg p-8 mb-4">
       <div className="w-full justify-between text-cyan-400 text-xs">
         <h1>
-          Question {initialAttemptedQuestions + currentQuestionIndex + 1} of {totalQuestions}
+          Question {initialAttemptedQuestions + currentQuestionIndex + 1} of{" "}
+          {totalQuestions}
         </h1>
       </div>
       <div className="mt-2 text-base font-semibold">
@@ -296,11 +323,11 @@ const Quiz = ({ currentTopicIds }) => {
         </div>
       )}
 
-      <div>
+      <div className="flex justify-between items-center mt-1">
         {!submitted ? (
           <button
             onClick={handleSubmit}
-            className="group px-4 py-2 text-xs font-medium text-cyan-500 rounded-lg bg-cyan-100 transition flex items-center duration-300 ease-in-out hover:bg-cyan-200"
+            className="px-4 py-2 text-xs font-medium text-cyan-500 rounded-lg bg-cyan-100 transition flex items-center duration-300 ease-in-out hover:bg-cyan-200"
           >
             Submit Answer
           </button>
@@ -315,6 +342,12 @@ const Quiz = ({ currentTopicIds }) => {
         {submitted && selectedIndex === null && (
           <p className="text-red-500 text-xs mt-2">Please select an answer.</p>
         )}
+        <button
+          onClick={handleEndQuiz}
+          className="px-4 py-2 text-xs font-medium text-red-500 rounded-lg bg-red-100 transition flex items-center duration-300 ease-in-out hover:bg-red-200"
+        >
+          End Quiz
+        </button>
       </div>
     </div>
   );
