@@ -26,86 +26,86 @@ const Quiz = ({ currentTopicIds }) => {
   const [batchCount, setBatchCount] = useState(0); // Track the batch count
 
   useEffect(() => {
+    const fetchQuestions = async (additional = false) => {
+      if (currentTopicIds.length > 0 && currentUser) {
+        const userProgressRef = doc(db, "userProgress", currentUser.uid);
+
+        // Fetch answered questions
+        const answeredQuestionsRef = collection(userProgressRef, "answeredQuestions");
+        const answeredSnapshot = await getDocs(answeredQuestionsRef);
+        let answeredQuestionIds = answeredSnapshot.docs.map((doc) => doc.id);
+
+        const questionsRef = collection(db, "questions");
+
+        let totalQuestionsCount = 0;
+        let totalAttemptedCount = 0;
+
+        const queries = currentTopicIds.map(async ({ id }) => {
+          const topicDoc = await getDoc(doc(db, "topics", id));
+          if (topicDoc.exists()) {
+            totalQuestionsCount += topicDoc.data().numQuestions;
+          }
+
+          const userProgressSnapshot = await getDoc(userProgressRef);
+          const topicProgress = userProgressSnapshot.data().topicProgress || [];
+          const topicData = topicProgress.find((tp) => tp.topicId === id);
+          if (topicData) {
+            totalAttemptedCount += topicData.attempts;
+          }
+
+          return query(
+            questionsRef,
+            where("topicReference", "==", doc(db, "topics", id)),
+            limit(300 * (batchCount + 1)) // Fetch questions in batches of 300
+          );
+        });
+
+        const resolvedQueries = await Promise.all(queries);
+        const questionDocs = await Promise.all(
+          resolvedQueries.map((q) => getDocs(q))
+        );
+
+        let allQuestions = [];
+        questionDocs.forEach((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            allQuestions.push({
+              id: doc.id,
+              topicId: doc.data().topicReference.id,
+              ...doc.data(),
+              answers: doc.data().options.map((option) => ({
+                text: option.answer,
+                correct: option.isCorrect,
+              })),
+            });
+          });
+        });
+
+        const newQuestions = allQuestions.filter(
+          (question) => !answeredQuestionIds.includes(question.id)
+        );
+
+        setTotalQuestions(totalQuestionsCount);
+        setInitialAttemptedQuestions(totalAttemptedCount);
+
+        if (additional) {
+          setQuestions((prevQuestions) => [...prevQuestions, ...newQuestions]);
+        } else {
+          setQuestions(newQuestions);
+        }
+        setCheckedState(new Array(newQuestions[0]?.answers.length || 0).fill(false));
+        setCurrentQuestionIndex(0);
+
+        console.log("Initial Fetch: ");
+        console.log("Total Questions: ", totalQuestionsCount);
+        console.log("Initial Attempted Questions: ", totalAttemptedCount);
+        console.log("Current Question Index: ", 0);
+      }
+    };
+
     if (currentUser) {
       fetchQuestions(); // Initial fetch
     }
-  }, [currentTopicIds, currentUser]);
-
-  const fetchQuestions = async (additional = false) => {
-    if (currentTopicIds.length > 0 && currentUser) {
-      const userProgressRef = doc(db, "userProgress", currentUser.uid);
-
-      // Fetch answered questions
-      const answeredQuestionsRef = collection(userProgressRef, "answeredQuestions");
-      const answeredSnapshot = await getDocs(answeredQuestionsRef);
-      let answeredQuestionIds = answeredSnapshot.docs.map((doc) => doc.id);
-
-      const questionsRef = collection(db, "questions");
-
-      let totalQuestionsCount = 0;
-      let totalAttemptedCount = 0;
-
-      const queries = currentTopicIds.map(async ({ id }) => {
-        const topicDoc = await getDoc(doc(db, "topics", id));
-        if (topicDoc.exists()) {
-          totalQuestionsCount += topicDoc.data().numQuestions;
-        }
-
-        const userProgressSnapshot = await getDoc(userProgressRef);
-        const topicProgress = userProgressSnapshot.data().topicProgress || [];
-        const topicData = topicProgress.find((tp) => tp.topicId === id);
-        if (topicData) {
-          totalAttemptedCount += topicData.attempts;
-        }
-
-        return query(
-          questionsRef,
-          where("topicReference", "==", doc(db, "topics", id)),
-          limit(300 * (batchCount + 1)) // Fetch questions in batches of 300
-        );
-      });
-
-      const resolvedQueries = await Promise.all(queries);
-      const questionDocs = await Promise.all(
-        resolvedQueries.map((q) => getDocs(q))
-      );
-
-      let allQuestions = [];
-      questionDocs.forEach((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          allQuestions.push({
-            id: doc.id,
-            topicId: doc.data().topicReference.id,
-            ...doc.data(),
-            answers: doc.data().options.map((option) => ({
-              text: option.answer,
-              correct: option.isCorrect,
-            })),
-          });
-        });
-      });
-
-      const newQuestions = allQuestions.filter(
-        (question) => !answeredQuestionIds.includes(question.id)
-      );
-
-      setTotalQuestions(totalQuestionsCount);
-      setInitialAttemptedQuestions(totalAttemptedCount);
-
-      if (additional) {
-        setQuestions((prevQuestions) => [...prevQuestions, ...newQuestions]);
-      } else {
-        setQuestions(newQuestions);
-      }
-      setCheckedState(new Array(newQuestions[0]?.answers.length || 0).fill(false));
-      setCurrentQuestionIndex(0);
-
-      console.log("Initial Fetch: ");
-      console.log("Total Questions: ", totalQuestionsCount);
-      console.log("Initial Attempted Questions: ", totalAttemptedCount);
-      console.log("Current Question Index: ", 0);
-    }
-  };
+  }, [currentTopicIds, currentUser, batchCount]);
 
   // Handle next question navigation
   const handleNextQuestion = () => {
@@ -122,7 +122,6 @@ const Quiz = ({ currentTopicIds }) => {
       // Fetch more questions if we've reached the end of the current batch
       if (nextIndex === questions.length - 10) {
         setBatchCount((prevBatchCount) => prevBatchCount + 1);
-        fetchQuestions(true); // Fetch additional questions
       }
     } else {
       console.log("No more questions to display.");
