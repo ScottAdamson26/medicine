@@ -29,6 +29,12 @@ const Continue = ({ topicProgress = [], topics = [] }) => {
     }
   }, [topicProgress, topics]); // Re-run the effect when topicProgress or topics change
 
+  const gradientClasses = [
+    "bg-gradient-to-r from-violet-200 to-pink-200",
+    "bg-gradient-to-r from-green-200 to-lime-200",
+    "bg-gradient-to-r from-yellow-200 to-amber-200"
+  ];
+
   return (
     <div className="w-full flex flex-col">
       <h2 className="mb-4">Continue learning</h2>
@@ -51,7 +57,7 @@ const Continue = ({ topicProgress = [], topics = [] }) => {
             {/* left div */}
             <div className="flex flex-row items-center w-1/2 h-full">
               {/* logo div */}
-              <div className={`bg-gradient-to-r from-${['violet', 'green', 'yellow'][index % 3]}-200 to-${['pink', 'lime', 'amber'][index % 3]}-200 rounded-lg w-8 h-8 mr-4`} />
+              <div className={`${gradientClasses[index % 3]} rounded-lg w-8 h-8 mr-4`} />
 
               <div className="flex-grow">
                 <p className="text-sm font-medium mb-1">{topic.name}</p>
