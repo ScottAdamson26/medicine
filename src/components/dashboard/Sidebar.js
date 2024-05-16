@@ -21,7 +21,7 @@ const Sidebar = ({ selectedNav, onNavChange }) => {
             </div>
             <h1 className="text-xl mt-1">Dr Revision</h1>
             <h2 className="font-medium text-md opacity-70">
-              Master your studies
+              Your study hub
             </h2>
           </div>
           <nav className="flex flex-col w-full flex-grow">

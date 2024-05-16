@@ -145,7 +145,7 @@ function LandingPage2() {
           <div className="text-cyan-400 text-xs font-bold">
             <p>WHAT OUR USERS SAY</p>
             <p className="mt-2 font-semibold text-balance text-2xl">
-              "Studying doesn't have to be boring. Road2Doctor is fun to use and
+              "Studying doesn't have to be boring. Dr Revision is fun to use and
               makes revising less of a chore."
             </p>
             <p className="text-xs text-neutral-300 mt-2">

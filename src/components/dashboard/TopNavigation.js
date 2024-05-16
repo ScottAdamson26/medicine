@@ -29,7 +29,7 @@ const TopNavigation = ({ selectedNav, onNavChange }) => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 mx-2  bg-neutral-100 md:hidden block py-3 px-6 mt-1 ${hasScrolled ? "shadow-xl rounded-full bg-white " : ""}`}>
+    <nav className={`fixed mt-2 top-0 left-0 right-0 z-50 mx-2  bg-neutral-100 md:hidden block py-3 px-6 ${hasScrolled ? "shadow-xl rounded-full bg-white " : ""}`}>
       <div className="flex justify-between items-center">
         <div className="flex items-center">
         <img alt="logo" src={Logo} className="w-8 mr-2 "/>
