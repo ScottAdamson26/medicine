@@ -2,7 +2,6 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import navItems from "./NavItems"; // Ensure this imports the nav items correctly
 import Logo from "./drrevision.webp";
-import { faUserDoctor } from "@fortawesome/free-solid-svg-icons";
 const Sidebar = ({ selectedNav, onNavChange }) => {
   // Filter out the main nav items and the bottom nav items
   const mainNavItems = navItems.filter(
@@ -18,7 +17,7 @@ const Sidebar = ({ selectedNav, onNavChange }) => {
         <div className="flex flex-col flex-grow">
           <div className="font-bold py-16 text-cyan-400 flex flex-col items-center">
             <div className="mb-2 bg rounded-lg ">
-              <img src={Logo} className="w-20"/>
+              <img alt="logo" src={Logo} className="w-20"/>
             </div>
             <h1 className="text-xl mt-1">Dr Revision</h1>
             <h2 className="font-medium text-md opacity-70">
