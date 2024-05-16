@@ -27,7 +27,7 @@ function LandingNavBar() {
           isScrolled ? "shadow-lg bg-white" : ""
         }`}
       >
-        <div className="mx-auto flex justify-between items-center px-5 text-cyan-400">
+        <div className="mx-auto flex justify-between items-center px-5 text-cyan-400 py-1">
           <div className="flex items-center font-bold text-xl">
             <img alt="logo" src={Logo} className="w-8 mr-2 "/>
           Dr Revision
