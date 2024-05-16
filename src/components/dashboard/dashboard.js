@@ -150,7 +150,7 @@ const Dashboard = () => {
                 <div className="mb-4">
                   {" "}
                   {/* Margin bottom for spacing */}
-                  <Continue />
+                  <Continue topicProgress={topicProgress} topics={topics}/>
                 </div>
                 <div className="mb-4">
                   {" "}

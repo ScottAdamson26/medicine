@@ -194,12 +194,14 @@ const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopic
         if (wasCorrect) {
           topicProgress[index].correct += 1;
         }
+        topicProgress[index].lastUpdated = new Date();
       } else {
         // Create new topic progress entry
         topicProgress.push({
           topicId: topicId,
           attempts: 1,
           correct: wasCorrect ? 1 : 0,
+          lastUpdated: new Date(),
         });
       }
 
@@ -269,7 +271,6 @@ const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopic
         <Lottie options={defaultOptions} height={28} width={28} />
       </div>
     );
-    
   }
 
   const currentQuestion = questions[currentQuestionIndex];
