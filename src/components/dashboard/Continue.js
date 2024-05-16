@@ -52,7 +52,7 @@ const Continue = ({ topicProgress = [], topics = [] }) => {
         return (
           <div
             key={index}
-            className="flex flex-row w-full mb-2 px-4 py-3 text-black rounded-lg shadow-md bg-white items-center justify-between text-base font-regular"
+            className="flex flex-row w-full mb-2 px-4 py-3 text-black rounded-lg shadow-md bg-white items-center justify-between text-base font-regular z-10"
           >
             {/* left div */}
             <div className="flex flex-row items-center w-1/2 h-full">

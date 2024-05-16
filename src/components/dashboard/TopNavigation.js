@@ -28,7 +28,7 @@ const TopNavigation = ({ selectedNav, onNavChange }) => {
   };
 
   return (
-    <nav className={`sticky top-1 mx-2 z-40 bg-neutral-100 md:hidden block py-4 px-6 ${hasScrolled ? "shadow-xl rounded-lg" : ""}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 mx-2  bg-neutral-100 md:hidden block py-4 px-6 mt-1 ${hasScrolled ? "shadow-xl rounded-full bg-white " : ""}`}>
       <div className="flex justify-between items-center">
         <div>
           <span className="text-xl font-bold text-cyan-400">Medicine</span>

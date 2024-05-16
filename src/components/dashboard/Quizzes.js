@@ -69,7 +69,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg  w-full overflow-auto mb-0 xl:mb-0">
+    <div className="bg-white rounded-lg shadow-lg  w-full overflow-auto mb-0 xl:mb-0 z-10">
       <div className="px-4 pt-4 flex-1 flex justify-between flex-row items-start md:items-center">
         <div className="flex flex-col md:flex-row items-start md:items-center">
           <h2 className="text-xl">Quiz Topics</h2>

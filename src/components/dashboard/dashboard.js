@@ -130,7 +130,8 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex bg-neutral-100 min-h-screen overflow-x-hidden">
+    <div className="flex bg-neutral-100 min-h-screen overflow-x-hidden relative">
+      
       {showModal && <UserNameModal user={currentUser} onClose={closeModal} />}
       <Sidebar selectedNav={selectedNav} onNavChange={handleNavChange} />
       <div className="flex-1 w-full">
@@ -138,7 +139,7 @@ const Dashboard = () => {
           selectedNav={selectedNav}
           onNavChange={handleNavChange}
         />
-        <div className="flex p-4 md:p-8 md:pl-0 text-2xl font-bold flex flex-col xl:flex-row w-full">
+        <div className="flex p-4 md:p-8 md:pl-0 text-2xl font-bold flex flex-col xl:flex-row w-full mt-14 md:mt-0">
           <div className="flex flex-col w-full xl:w-3/5 2xl:w-2/3">
             {selectedNav === "Dashboard" && !showQuiz && (
               <>
