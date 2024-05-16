@@ -5,7 +5,7 @@ import { useAuth } from "../../AuthContext";
 const Welcome = () => {
   const { name } = useAuth();
 
-  let welcomeMessage = "Welcome to Medicine";
+  let welcomeMessage = "Welcome to Dr Revision";
   if (name != null) {
     welcomeMessage = "Welcome back, " + name;
   }
