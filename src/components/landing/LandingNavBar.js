@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Logo from "./logo.webp";
+import Logo from "./drrevision.webp";
 function LandingNavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -29,9 +29,9 @@ function LandingNavBar() {
       >
         <div className="mx-auto flex justify-between items-center px-5 text-cyan-400">
           <div className="flex items-center font-bold text-xl">
-            <img src={Logo} alt="Logo" className="h-12 mr-1" />{" "}
-            {/* Adjust the h-6 class to fit the height of your text */}
-            CliniQuiz
+            <img src={Logo} className="w-8 mr-2 "/>
+          Dr Revision
+
           </div>
           <div>
             {/* Use hidden to hide on small screens, and md:inline-flex or md:block to show on medium screens and up */}
