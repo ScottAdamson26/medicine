@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { useAuth } from '../../AuthContext';
 import axios from "axios";
 import Lottie from "react-lottie";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import spinnerAnimation from "./spinner.json"; // Ensure this path is correct
+import {
+  faBolt,
+  faCircle,
+
+} from "@fortawesome/free-solid-svg-icons";
 
 function Pricing() {
   const { stripeId, loading } = useAuth();
@@ -40,77 +47,74 @@ function Pricing() {
         Select the pricing plan that suits your study needs
       </h2>
 
-      <div className="w-full max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-7">
-        {/* Tier 1 - Free Plan */}
-        <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1">
-          <div className="bg-white rounded-lg flex flex-col w-full h-full p-8">
-            <h2 className="text-xl font-bold mb-4">Free Plan</h2>
-            <ul className="mb-4">
-              <li>✔ Feature A</li>
-              <li>✔ Feature B</li>
-            </ul>
-            <button
-              className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
-              onClick={() => handleClick('price_1P8lTVD06bcv6mn0WhXTqhyR')}
-              disabled={buttonLoading['price_1P8lTVD06bcv6mn0WhXTqhyR']}
-              style={{ width: "100%", height: "40px" }}
-            >
-              {buttonLoading['price_1P8lTVD06bcv6mn0WhXTqhyR'] ? (
-                <div style={{ width: "24px", height: "24px" }}>
-                  <Lottie
-                    options={{
-                      loop: true,
-                      autoplay: true,
-                      animationData: spinnerAnimation,
-                      rendererSettings: {
-                        preserveAspectRatio: "xMidYMid slice",
-                      },
-                    }}
-                  />
-                </div>
-              ) : (
-                "Choose Plan"
-              )}
-            </button>
-          </div>
-        </div>
+      
+      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:gap-20 gap-16">
+          {/* Tier 1 - Free Plan */}
+          <div className="bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-xl p-1 mx-5 md:mx-0 md:ml-10">
+            <div className="bg-white rounded-lg flex flex-col w-full h-full py-20 px-8 md:px-12">
+              <h2 className="text-xl font-bold mb-4">Free Plan</h2>
+              <div className="flex flex-row items-end mb-4 ">
+                {" "}
+                <h2 className=" font-semibold text-4xl mr-1 ">£0</h2>
+                <p className="opacity-60">/ month</p>
+              </div>
 
-        {/* Tier 2 - Pro Plan (Most Popular) */}
-        <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1 mt-4 md-0">
-          <div className="bg-gradient-to-r from-blue-300 to-cyan-400 absolute -top-7 left-1/2 transform -translate-x-1/2 bg-blue-500 py-1 text-sm text-white rounded-t-xl inline-flex items-center justify-center w-full">
-            Most Popular
+              <ul className="mb-4">
+                <li>✔ 20 trial questions</li>
+                <li className="opacity-30">✗ 4 Mock Exams</li>
+                <li className="opacity-30">✗ Pomodoro Study Timer</li>
+              </ul>
+              <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
+                Get Started
+              </button>
+            </div>
           </div>
-          <div className="bg-white rounded-b-lg flex flex-col w-full h-full p-8">
-            <h2 className="text-xl font-bold mb-4">Pro Plan</h2>
-            <ul className="mb-4">
-              <li>✔ Feature A</li>
-              <li>✔ Feature B</li>
-            </ul>
-            <button
-              className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
-              onClick={() => handleClick('price_1P72ruD06bcv6mn0gz4bwaKT')}
-              disabled={buttonLoading['price_1P72ruD06bcv6mn0gz4bwaKT']}
-              style={{ width: "100%", height: "40px" }}
-            >
-              {buttonLoading['price_1P72ruD06bcv6mn0gz4bwaKT'] ? (
-                <div style={{ width: "24px", height: "24px" }}>
-                  <Lottie
-                    options={{
-                      loop: true,
-                      autoplay: true,
-                      animationData: spinnerAnimation,
-                      rendererSettings: {
-                        preserveAspectRatio: "xMidYMid slice",
-                      },
-                    }}
+
+          {/* Tier 2 - Pro Plan (Most Popular) */}
+          <div className="relative bg-gradient-to-r from-blue-300 to-cyan-400 shadow-md rounded-b-xl p-1 mx-5 md:mx-0 md:mr-10">
+            <div className="bg-gradient-to-r from-blue-300 to-cyan-400 absolute -top-7 left-1/2 transform -translate-x-1/2 bg-blue-500 py-1 text-sm text-white rounded-t-xl inline-flex items-center justify-center w-full">
+              Most Popular
+            </div>
+            <div className="bg-white rounded-b-lg flex flex-col w-full py-20 px-8 md:px-12">
+              <div>
+                <button className="inline md:hidden outline-dashed outline-1 text-xs mb-4 font-semibold outline-red-500 rounded-full py-0.5 px-3 text-red-500">
+                  <FontAwesomeIcon icon={faCircle} beatFade className="mr-2" />
+                  50% OFF!
+                </button>
+              </div>
+              <div className="flex flex-row items-center mb-4 ">
+                {" "}
+                <h2 className="text-xl font-bold">Pro Plan</h2>
+                <FontAwesomeIcon
+                  icon={faBolt}
+                  className="text-yellow-400 ml-2"
+                />
+                <button className=" hidden md:inline outline-dashed flex items-center outline-1 text-xs font-semibold outline-red-500 rounded-full py-0.5 px-3 ml-2 text-red-500">
+                  <FontAwesomeIcon
+                    icon={faCircle}
+                    beatFade
+                    className="mr-2 align-middle tra"
                   />
-                </div>
-              ) : (
-                "Choose Plan"
-              )}
-            </button>
+                  50% OFF!
+                </button>
+              </div>
+
+              <div className="flex flex-row items-end mb-4 mr-1">
+                {" "}
+                <h2 className=" font-semibold text-4xl ">£4.97</h2>
+                <p className="opacity-60">/ month</p>
+              </div>
+
+              <ul className="mb-4">
+                <li>✔ 4,000+ Questions</li>
+                <li>✔ 4 Mock Exams</li>
+                <li>✔ Pomodoro Study Timer</li>
+              </ul>
+              <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
+                Get Started
+              </button>
+            </div>
           </div>
-        </div>
       </div>
     </div>
   );

@@ -80,7 +80,6 @@ function LandingPage2() {
 
         {/* img that needs bled off the page in <md devices */}
         <div className="h-full -mr-2">
-    
           <img
             src={DashboardImage}
             alt="Doctor"
@@ -229,7 +228,12 @@ function LandingPage2() {
                 <li className="opacity-30">✗ 4 Mock Exams</li>
                 <li className="opacity-30">✗ Pomodoro Study Timer</li>
               </ul>
-              <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
+              <button
+                onClick={() => {
+                  window.location.href = "/register";
+                }}
+                className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
+              >
                 Get Started
               </button>
             </div>
@@ -275,7 +279,12 @@ function LandingPage2() {
                 <li>✔ 4 Mock Exams</li>
                 <li>✔ Pomodoro Study Timer</li>
               </ul>
-              <button className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center">
+              <button
+                onClick={() => {
+                  window.location.href = "/register";
+                }}
+                className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
+              >
                 Get Started
               </button>
             </div>
