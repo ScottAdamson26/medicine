@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
-import ProfilePic from "./profilepic.webp";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../AuthContext";
-import EditProfile from "./EditProfile"; // Assume this is the correct path
+import EditProfile from "./EditProfile";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebase-config";
+import profilePic1 from "./profilepic.webp";
+import profilePic2 from "./profilepic2.webp";
+import profilePic3 from "./profilepic3.webp";
 
 const Profile = ({ topics }) => {
-  const { planName } = useAuth();
+  const { planName, currentUser, name, profilePictureIndex, setProfilePictureIndex } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const { name } = useAuth();
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [totalTopics, setTotalTopics] = useState(0);
+
+  const profilePics = [profilePic1, profilePic2, profilePic3];
 
   const toggleEdit = () => setIsEditing(!isEditing);
 
@@ -29,11 +34,27 @@ const Profile = ({ topics }) => {
     };
 
     calculateStats();
-  }, [topics]); // Only `topics` should be included here
+  }, [topics]);
+
+  useEffect(() => {
+    const fetchUserProfilePicture = async () => {
+      if (currentUser) {
+        const userRef = doc(db, "users", currentUser.uid);
+        const userSnapshot = await getDoc(userRef);
+        if (userSnapshot.exists()) {
+          const profilePictureIndex = userSnapshot.data().profilePicture;
+          if (profilePictureIndex !== undefined) {
+            setProfilePictureIndex(profilePictureIndex);
+          }
+        }
+      }
+    };
+
+    fetchUserProfilePicture();
+  }, [currentUser, setProfilePictureIndex]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full bg-white rounded-xl shadow-lg py-8 mb-4 relative">
-      {/* Edit Icon */}
       <button
         onClick={toggleEdit}
         className="absolute top-4 left-4 text-gray-300 hover:text-gray-400 text-xs transition-colors duration-200"
@@ -42,10 +63,9 @@ const Profile = ({ topics }) => {
         <FontAwesomeIcon icon={faPenToSquare} />
       </button>
 
-      {/* Conditionally display the EditProfile component */}
       {isEditing && <EditProfile onClose={toggleEdit} />}
 
-      <img src={ProfilePic} alt="Profile" className="w-20 h-20 rounded-full" />
+      <img src={profilePics[profilePictureIndex]} alt="Profile" className="w-20 h-20 rounded-full" />
       <h1 className="text-xl font-bold text-zinc-900 mt-4">{name}</h1>
 
       <div className="flex text-sm items-center">

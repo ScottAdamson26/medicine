@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "../../AuthContext"; // Corrected the import path as necessary
+import { useAuth } from "../../AuthContext";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Lottie from "react-lottie";
@@ -11,12 +11,17 @@ import profilePic2 from "./profilepic2.webp";
 import profilePic3 from "./profilepic3.webp";
 
 const EditProfile = ({ onClose }) => {
-  const { currentUser, name, SetName } = useAuth();
+  const { currentUser, name, SetName, profilePictureIndex, setProfilePictureIndex } = useAuth();
   const [inputName, setInputName] = useState(name);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
-  const [selectedPicIndex, setSelectedPicIndex] = useState(0); // Default selected pic index
-  const profilePics = [profilePic1, profilePic2, profilePic3]; // Array of profile picture sources
+  const [selectedPicIndex, setSelectedPicIndex] = useState(profilePictureIndex);
+
+  const profilePics = [profilePic1, profilePic2, profilePic3];
+
+  useEffect(() => {
+    setSelectedPicIndex(profilePictureIndex);
+  }, [profilePictureIndex]);
 
   const handleInputChange = (event) => {
     setInputName(event.target.value);
@@ -24,17 +29,21 @@ const EditProfile = ({ onClose }) => {
   };
 
   const handleSave = async () => {
-    if (inputName !== name && currentUser) {
+    if (currentUser) {
       setIsSaving(true);
       setError("");
       try {
         const userRef = doc(db, "users", currentUser.uid);
-        await updateDoc(userRef, { name: inputName });
+        await updateDoc(userRef, { 
+          name: inputName, 
+          profilePicture: selectedPicIndex 
+        });
         SetName(inputName);
+        setProfilePictureIndex(selectedPicIndex);
         onClose();
       } catch (error) {
-        console.error("Failed to update name:", error);
-        setError("Failed to update name.");
+        console.error("Failed to update profile:", error);
+        setError("Failed to update profile.");
         setIsSaving(false);
       }
     }

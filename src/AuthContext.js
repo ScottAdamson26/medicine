@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   const [planName, setPlanName] = useState("Free Plan"); // Default to Free Plan
   const [loading, setLoading] = useState(true);
   const [name, SetName] = useState(null);
+  const [profilePictureIndex, setProfilePictureIndex] = useState(0); // State for profile picture index
 
   const logout = async () => {
     try {
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error signing out: ", error);
     }
   };
-  
+
   const fetchUserData = async (user) => {
     const userRef = doc(db, "users", user.uid);
     const userDoc = await getDoc(userRef);
@@ -43,21 +44,18 @@ export const AuthProvider = ({ children }) => {
         subscriptions.push(subData);
       });
 
-      // Sort subscriptions by 'created_at' in descending order to get the most recent one first
       subscriptions.sort((a, b) => b.created - a.created);
 
-      const mostRecentSubscription = subscriptions[0]; // Most recent subscription
+      const mostRecentSubscription = subscriptions[0];
       let activeSubscription = false;
-      let currentPlanName = "Free Plan";  // Default plan name
-
+      let currentPlanName = "Free Plan";
 
       if (mostRecentSubscription && mostRecentSubscription.status === "active") {
-        // Assuming there's always at least one item and it has a price map with a name field
         const itemName = mostRecentSubscription.items && mostRecentSubscription.items.length > 0 
                           ? mostRecentSubscription.items[0].price.product.name 
                           : "Free Plan";
 
-        currentPlanName = itemName; // Set the plan name from the subscription data
+        currentPlanName = itemName;
         activeSubscription = true;
       }
 
@@ -66,17 +64,17 @@ export const AuthProvider = ({ children }) => {
       setHasActiveSubscription(activeSubscription);
       setPlanName(currentPlanName);
       SetName(data.name || null);
+      setProfilePictureIndex(data.profilePicture !== undefined ? data.profilePicture : 0);
 
       return { ...data, hasActiveSubscription: activeSubscription, planName: currentPlanName };
     } else {
       console.log("No user data found");
       setCurrentUser(user);
       setHasActiveSubscription(false);
-      setPlanName("Free Plan"); // Reset if no user data
+      setPlanName("Free Plan");
       return null;
     }
   };
-
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -87,7 +85,7 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(null);
         setStripeId(null);
         setHasActiveSubscription(false);
-        setPlanName("Free Plan");  // Ensure plan name is reset if no user is logged in
+        setPlanName("Free Plan");
       }
       setLoading(false);
     });
@@ -103,12 +101,14 @@ export const AuthProvider = ({ children }) => {
       setStripeId,
       hasActiveSubscription,
       setHasActiveSubscription,
-      planName,  // Expose the planName in the context
+      planName,
       loading,
       fetchUserData,
       logout,
       name,
-      SetName
+      SetName,
+      profilePictureIndex,
+      setProfilePictureIndex // Ensure this is provided
     }}>
       {children}
     </AuthContext.Provider>
