@@ -29,7 +29,9 @@ exports.createCheckoutSession = functions.https.onRequest((req, res) => {
           }],
           mode: "subscription",
           success_url: `${req.headers.origin}/subscription-success`,
-          cancel_url: `${req.headers.origin}/pricing`
+          cancel_url: `${req.headers.origin}/pricing`,
+          payment_method_collection: 'if_required',
+
         });
 
         res.status(200).json({ url: session.url });
