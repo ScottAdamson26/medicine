@@ -79,11 +79,11 @@ function LandingPage2() {
         </div>
 
         {/* img that needs bled off the page in <md devices */}
-        <div className="h-full -mr-2">
+        <div className="h-full">
           <img
             src={DashboardImage}
             alt="Doctor"
-            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none  md:rounded-tr-xl h-full object-cover object-left"
+            className="rounded-tl-xl rounded-bl-xl md:rounded-bl-none md:rounded-tr-xl  h-full object-cover object-left"
           />
         </div>
       </div>
