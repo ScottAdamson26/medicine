@@ -50,6 +50,7 @@ export const AuthProvider = ({ children }) => {
       let activeSubscription = false;
       let currentPlanName = "Free Plan";
 
+      console.log("here is the most recenet sub " + mostRecentSubscription);
       if (mostRecentSubscription && mostRecentSubscription.status === "active") {
         const itemName = mostRecentSubscription.items && mostRecentSubscription.items.length > 0 
                           ? mostRecentSubscription.items[0].price.product.name 
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }) => {
 
         currentPlanName = itemName;
         activeSubscription = true;
+        console.log("here it is fam " + mostRecentSubscription.items[0].price.product )
       }
 
       setCurrentUser(user);

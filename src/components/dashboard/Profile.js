@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faPenToSquare, faLock } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../AuthContext";
 import EditProfile from "./EditProfile";
 import { doc, getDoc } from "firebase/firestore";
@@ -53,6 +53,13 @@ const Profile = ({ topics }) => {
     fetchUserProfilePicture();
   }, [currentUser, setProfilePictureIndex]);
 
+  // Fake data for Free Plan
+  const fakeData = {
+    totalQuestions: 100,
+    totalCorrect: 50,
+    totalTopics: 10,
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-full bg-white rounded-xl shadow-lg py-8 mb-4 relative">
       <button
@@ -73,17 +80,26 @@ const Profile = ({ topics }) => {
         <FontAwesomeIcon icon={faBolt} className="text-yellow-400" />
       </div>
 
-      <div className="flex mt-4 w-full xl:w-2/3 border-t pt-4 px-3">
+      <div className="flex mt-4 w-full border-t pt-4 px-8 relative">
+        {planName === "Free Plan" && (
+          <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm rounded-lg z-20 flex justify-center items-center">
+            <div className="flex items-center text-sm">
+              <FontAwesomeIcon icon={faLock} className="mr-2 text-gray-500" />
+              <p className="text-gray-500 ml-1">Upgrade to track your progress</p>
+            </div>
+          </div>
+        )}
+
         <div className="flex-1 text-center">
-          <p className="font-bold text-lg">{totalQuestions}</p>
+          <p className="font-bold text-lg">{planName === "Free Plan" ? fakeData.totalQuestions : totalQuestions}</p>
           <p className="text-zinc-900 opacity-65 text-sm">questions</p>
         </div>
         <div className="flex-1 border-l border-r border-gray-300 text-center">
-          <p className="font-bold text-lg">{totalCorrect}</p>
+          <p className="font-bold text-lg">{planName === "Free Plan" ? fakeData.totalCorrect : totalCorrect}</p>
           <p className="text-zinc-900 opacity-65 text-sm">correct</p>
         </div>
         <div className="flex-1 text-center">
-          <p className="font-bold text-lg">{totalTopics}</p>
+          <p className="font-bold text-lg">{planName === "Free Plan" ? fakeData.totalTopics : totalTopics}</p>
           <p className="text-zinc-900 opacity-65 text-sm">topics</p>
         </div>
       </div>
