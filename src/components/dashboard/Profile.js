@@ -85,7 +85,7 @@ const Profile = ({ topics }) => {
           <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm rounded-lg z-20 flex justify-center items-center">
             <div className="flex items-center text-sm">
               <FontAwesomeIcon icon={faLock} className="mr-2 text-gray-500" />
-              <p className="text-gray-500 ml-1">Upgrade to track your progress</p>
+              <p className="text-gray-500 ml-1">Upgrade to unlock</p>
             </div>
           </div>
         )}

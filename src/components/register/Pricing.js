@@ -1,19 +1,16 @@
 import React, { useState } from "react";
 import { useAuth } from '../../AuthContext';
-import { db } from "../../firebase-config"; // Ensure you have access to your Firebase config
-import { doc, setDoc } from "firebase/firestore"; // Import necessary Firestore functions
+import { db } from "../../firebase-config";
+import { doc, setDoc } from "firebase/firestore";
 import axios from "axios";
 import Lottie from "react-lottie";
-import spinnerAnimation from "./spinner.json"; // Ensure this path is correct
+import spinnerAnimation from "./spinner.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBolt,
-  faCircle
-} from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faCircle } from "@fortawesome/free-solid-svg-icons";
 
 function Pricing() {
-  const { stripeId, currentUser, loading } = useAuth(); // Ensure currentUser is available
-  const [buttonLoading, setButtonLoading] = useState({}); // Object to track loading state of each button
+  const { stripeId, currentUser, loading, planName } = useAuth();
+  const [buttonLoading, setButtonLoading] = useState({});
 
   if (loading) {
     return <div>Loading...</div>;
@@ -49,9 +46,8 @@ function Pricing() {
     setButtonLoading(prev => ({ ...prev, free: true }));
 
     const userId = currentUser.uid;
-    const subscriptionId = `sub_${new Date().getTime()}`; // Generate a unique ID for the subscription
+    const subscriptionId = `sub_${new Date().getTime()}`;
 
-    // Format the current date to match the required format
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleString('en-US', {
       month: 'long', day: 'numeric', year: 'numeric',
@@ -82,6 +78,16 @@ function Pricing() {
     }
   };
 
+  const getButtonClass = (plan) => {
+    return plan === planName
+      ? "bg-cyan-200 text-cyan-500 px-4 py-2 rounded font-medium cursor-pointer"
+      : "bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center";
+  };
+
+  const getButtonText = (plan) => {
+    return plan === planName ? "Your Current Plan" : "Select Plan";
+  };
+
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-white text-zinc-800 py-16 px-10">
       <h1 className="text-4xl font-bold mb-5 text-center">Choose a Plan</h1>
@@ -95,7 +101,6 @@ function Pricing() {
           <div className="bg-white rounded-lg flex flex-col w-full h-full py-16 px-8 md:px-12">
             <h2 className="text-xl font-bold mb-4">Free Plan</h2>
             <div className="flex flex-row items-end mb-4 ">
-              {" "}
               <h2 className=" font-semibold text-4xl mr-1 ">£0</h2>
               <p className="opacity-60">/ month</p>
             </div>
@@ -106,9 +111,10 @@ function Pricing() {
               <li className="opacity-30">✗ Pomodoro Study Timer</li>
             </ul>
             <button
-              className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
-              onClick={handleFreePlanClick}
-              disabled={buttonLoading.free}
+              className={getButtonClass("Free Plan")}
+              onClick={planName === "Free Plan" ? null : handleFreePlanClick}
+              style={{ cursor: planName === "Free Plan" ? "default" : "pointer" }}
+              disabled={planName === "Free Plan" || buttonLoading.free}
             >
               {buttonLoading.free ? (
                 <div style={{ width: "24px", height: "24px" }}>
@@ -124,7 +130,7 @@ function Pricing() {
                   />
                 </div>
               ) : (
-                "Select Plan"
+                getButtonText("Free Plan")
               )}
             </button>
           </div>
@@ -143,24 +149,15 @@ function Pricing() {
               </button>
             </div>
             <div className="flex flex-row items-center mb-4 ">
-              {" "}
               <h2 className="text-xl font-bold">Pro Plan</h2>
-              <FontAwesomeIcon
-                icon={faBolt}
-                className="text-yellow-400 ml-2"
-              />
+              <FontAwesomeIcon icon={faBolt} className="text-yellow-400 ml-2" />
               <button className=" hidden md:inline outline-dashed flex items-center outline-1 text-xs font-semibold outline-red-500 rounded-full py-0.5 px-3 ml-2 text-red-500">
-                <FontAwesomeIcon
-                  icon={faCircle}
-                  beatFade
-                  className="mr-2 align-middle tra"
-                />
+                <FontAwesomeIcon icon={faCircle} beatFade className="mr-2 align-middle tra" />
                 50% OFF!
               </button>
             </div>
 
             <div className="flex flex-row items-end mb-4 mr-1">
-              {" "}
               <h2 className=" font-semibold text-4xl ">£4.97</h2>
               <p className="opacity-60">/ month</p>
             </div>
@@ -171,9 +168,10 @@ function Pricing() {
               <li>✔ Pomodoro Study Timer</li>
             </ul>
             <button
-              className="bg-gradient-to-r from-blue-300 to-cyan-400 text-white px-4 py-2 rounded font-medium flex justify-center items-center"
-              onClick={() => handleClick('price_1P72ruD06bcv6mn0gz4bwaKT')}
-              disabled={buttonLoading['price_1P72ruD06bcv6mn0gz4bwaKT']}
+              className={getButtonClass("Pro Plan")}
+              onClick={planName === "Pro Plan" ? null : () => handleClick('price_1P72ruD06bcv6mn0gz4bwaKT')}
+              style={{ cursor: planName === "Pro Plan" ? "default" : "pointer" }}
+              disabled={planName === "Pro Plan" || buttonLoading['price_1P72ruD06bcv6mn0gz4bwaKT']}
             >
               {buttonLoading['price_1P72ruD06bcv6mn0gz4bwaKT'] ? (
                 <div style={{ width: "24px", height: "24px" }}>
@@ -189,7 +187,7 @@ function Pricing() {
                   />
                 </div>
               ) : (
-                "Select Plan"
+                getButtonText("Pro Plan")
               )}
             </button>
           </div>

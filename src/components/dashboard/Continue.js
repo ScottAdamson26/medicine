@@ -54,7 +54,7 @@ const Continue = ({ topicProgress = [], topics = [] }) => {
       >
         {/* Blur overlay for fake topics */}
         {(isFake || planName === "Free Plan") && (
-          <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm rounded-lg z-20 flex justify-center items-center">
+          <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm rounded-lg z-20 flex justify-center items-center text-sm md:text-base">
             {planName === "Free Plan" && (
               <>
                 <FontAwesomeIcon icon={faLock} className="mr-2 text-gray-500" />

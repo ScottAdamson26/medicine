@@ -29,7 +29,7 @@ const Upgrade = ({setSelectedNav}) => {
         alt="Upgrade Visual"
         className="h-auto max-h-48 rounded-l-xl"
       />
-      <div className="flex flex-col ml-6 md: ml-8 xl:ml-4 items-start">
+      <div className="flex flex-col ml-6 items-start pr-2">
         <h1 className="text-lg font-bold text-zinc-900">
           {planName === "Pro Plan"
             ? (

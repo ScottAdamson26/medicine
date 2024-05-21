@@ -21,7 +21,7 @@ const Dashboard = () => {
   const [topics, setTopics] = useState([]);
   const [userName, setUserName] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const { currentUser, hasActiveSubscription, name } = useAuth();
+  const { currentUser, hasActiveSubscription, name, planName } = useAuth();
   const navigate = useNavigate();
   const [exams, setExams] = useState([]);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchTopicProgress = async () => {
-      if (currentUser) {
+      if (currentUser && planName !== "Free Plan") {
         const userProgressRef = doc(db, "userProgress", currentUser.uid);
         const userProgressSnapshot = await getDoc(userProgressRef);
         if (userProgressSnapshot.exists()) {
@@ -59,7 +59,7 @@ const Dashboard = () => {
     };
 
     fetchTopicProgress();
-  }, [currentUser, refreshTopics]); // Depend on refreshTopics
+  }, [currentUser, refreshTopics, planName]); // Depend on refreshTopics and planName
 
   useEffect(() => {
     if (!currentUser || !hasActiveSubscription) {
@@ -77,7 +77,9 @@ const Dashboard = () => {
     const fetchTopics = async () => {
       const querySnapshot = await getDocs(collection(db, "topics"));
       const topicsArray = querySnapshot.docs.map(doc => {
-        const progress = topicProgress.find(tp => tp.topicId === doc.id);
+        const progress = planName !== "Free Plan" 
+          ? topicProgress.find(tp => tp.topicId === doc.id) 
+          : null;
         return {
           id: doc.id,
           name: doc.data().name,
@@ -92,8 +94,7 @@ const Dashboard = () => {
     if (currentUser && hasActiveSubscription) {
       fetchTopics();
     }
-  }, [currentUser, hasActiveSubscription, topicProgress, refreshTopics]); // Depend on refreshTopics
-  
+  }, [currentUser, hasActiveSubscription, topicProgress, refreshTopics, planName]); // Depend on refreshTopics and planName
 
   // fetch mock exams on load
   useEffect(() => {
@@ -104,7 +105,7 @@ const Dashboard = () => {
           .map((doc) => ({
             id: doc.id,
             exam: doc.data().exam, // Assuming 'exam' field contains the exam name
-            totalQuestions: 20, // Default to 1 until database update
+            totalQuestions: 20, // Default to 20 until database update
             correct: 4,
             incorrect: 2,
           }))
@@ -139,7 +140,7 @@ const Dashboard = () => {
           selectedNav={selectedNav}
           onNavChange={handleNavChange}
         />
-        <div className="flex p-4 md:p-8 md:pl-0 text-2xl font-bold flex flex-col xl:flex-row w-full mt-14 md:mt-0">
+        <div className="flex p-4 md:p-8 md:pl-0 text-2xl font-bold flex-col xl:flex-row w-full mt-14 md:mt-0">
           <div className="flex flex-col w-full xl:w-3/5 2xl:w-2/3">
             {selectedNav === "Dashboard" && !showQuiz && (
               <>
