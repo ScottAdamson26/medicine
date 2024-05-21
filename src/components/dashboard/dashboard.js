@@ -44,6 +44,7 @@ const Dashboard = () => {
     setRefreshTopics((prev) => !prev);
   };
 
+  // fetch the users progress by topic
   useEffect(() => {
     const fetchTopicProgress = async () => {
       if (currentUser && planName !== "Free Plan") {
@@ -64,7 +65,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (!currentUser || !hasActiveSubscription) {
       console.log(
-        "Redirecting to sign-in, no active subscription or user is not logged in."
+        "Redirecting to sign-in, no active subscription or user is not logged in.",
       );
       navigate("/sign-in");
     } else if (!name && currentUser) {
@@ -73,13 +74,15 @@ const Dashboard = () => {
     }
   }, [currentUser, hasActiveSubscription, navigate, name]);
 
+  // fetch names of topics and how many topic questions
   useEffect(() => {
     const fetchTopics = async () => {
       const querySnapshot = await getDocs(collection(db, "topics"));
-      const topicsArray = querySnapshot.docs.map(doc => {
-        const progress = planName !== "Free Plan" 
-          ? topicProgress.find(tp => tp.topicId === doc.id) 
-          : null;
+      const topicsArray = querySnapshot.docs.map((doc) => {
+        const progress =
+          planName !== "Free Plan"
+            ? topicProgress.find((tp) => tp.topicId === doc.id)
+            : null;
         return {
           id: doc.id,
           name: doc.data().name,
@@ -90,15 +93,21 @@ const Dashboard = () => {
       });
       setTopics(topicsArray);
     };
-  
+
     if (currentUser && hasActiveSubscription) {
       fetchTopics();
     }
-  }, [currentUser, hasActiveSubscription, topicProgress, refreshTopics, planName]); // Depend on refreshTopics and planName
+  }, [
+    currentUser,
+    hasActiveSubscription,
+    topicProgress,
+    refreshTopics,
+    planName,
+  ]); // Depend on refreshTopics and planName
 
   // fetch mock exams on load
   useEffect(() => {
-    if (currentUser && hasActiveSubscription) {
+    if (currentUser && planName !== "Free Plan") {
       const fetchExams = async () => {
         const querySnapshot = await getDocs(collection(db, "mockexams"));
         const examsArray = querySnapshot.docs
@@ -131,17 +140,16 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex bg-neutral-100 min-h-screen overflow-x-hidden relative">
-      
+    <div className="relative flex min-h-screen overflow-x-hidden bg-neutral-100">
       {showModal && <UserNameModal user={currentUser} onClose={closeModal} />}
       <Sidebar selectedNav={selectedNav} onNavChange={handleNavChange} />
-      <div className="flex-1 w-full">
+      <div className="w-full flex-1">
         <TopNavigation
           selectedNav={selectedNav}
           onNavChange={handleNavChange}
         />
-        <div className="flex p-4 md:p-8 md:pl-0 text-2xl font-bold flex-col xl:flex-row w-full mt-14 md:mt-0">
-          <div className="flex flex-col w-full xl:w-3/5 2xl:w-2/3">
+        <div className="mt-14 flex w-full flex-col p-4 text-2xl font-bold md:mt-0 md:p-8 md:pl-0 xl:flex-row">
+          <div className="flex w-full flex-col xl:w-3/5 2xl:w-2/3">
             {selectedNav === "Dashboard" && !showQuiz && (
               <>
                 <div className="mb-4">
@@ -152,7 +160,7 @@ const Dashboard = () => {
                 <div className="mb-4">
                   {" "}
                   {/* Margin bottom for spacing */}
-                  <Continue topicProgress={topicProgress} topics={topics}/>
+                  <Continue topicProgress={topicProgress} topics={topics} />
                 </div>
                 <div className="mb-4">
                   {" "}
@@ -189,7 +197,7 @@ const Dashboard = () => {
             )}
             {selectedNav === "Profile" && !showQuiz && (
               <>
-                <Profile topics={topicProgress} name={userName}/>
+                <Profile topics={topicProgress} name={userName} />
                 <Upgrade />
               </>
             )}
@@ -201,11 +209,11 @@ const Dashboard = () => {
           </div>
 
           {/* Column 2 - No specific width classes needed */}
-          <div className="flex-1 pl-0 xl:pl-8 xl:w-2/5 2xl:w-1/3">
+          <div className="flex-1 pl-0 xl:w-2/5 xl:pl-8 2xl:w-1/3">
             <Timer />
             {!(selectedNav === "Profile") && (
               <>
-                <Profile topics={topicProgress} name={userName}/>
+                <Profile topics={topicProgress} name={userName} />
                 <Upgrade setSelectedNav={setSelectedNav} />
               </>
             )}

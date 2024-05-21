@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Checkbox from "./Checkbox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faAngleRight, faLock } from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../../AuthContext";
 
-const MockExams = ({ exams }) => {
+const MockExams = ({ exams = [] }) => {
+  const { planName } = useAuth();
   const [selectedExam, setSelectedExam] = useState(null);
   const [currentFilter, setCurrentFilter] = useState("All");
 
@@ -26,6 +28,13 @@ const MockExams = ({ exams }) => {
     }
   };
 
+  // Fake data for Free Plan
+  const fakeExams = [
+    { id: 1, exam: "Fake Exam 1", correct: 5, incorrect: 3, totalQuestions: 10 },
+    { id: 2, exam: "Fake Exam 2", correct: 2, incorrect: 4, totalQuestions: 10 },
+    { id: 3, exam: "Fake Exam 3", correct: 4, incorrect: 3, totalQuestions: 10 }
+  ];
+
   // Function to determine button style
   const buttonStyle = (filter) => {
     return `px-2 py-1 m-1 ${
@@ -36,7 +45,14 @@ const MockExams = ({ exams }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-full overflow-auto mb-4">
+    <div className="relative bg-white rounded-lg shadow-lg w-full overflow-auto mb-4">
+      {planName === "Free Plan" && (
+        <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm rounded-lg z-20 flex justify-center items-center text-sm md:text-base">
+          <FontAwesomeIcon icon={faLock} className="mr-2 text-gray-500" />
+          <p className="text-gray-500">Upgrade to unlock</p>
+        </div>
+      )}
+
       <div className="p-4 pb-2 -1 flex justify-between flex-row items-start md:items-center">
         <div className="flex flex-col md:flex-row items-start md:items-center">
           <h2 className="text-xl">Mock Exams</h2>
@@ -60,11 +76,11 @@ const MockExams = ({ exams }) => {
         <div className="w-6/12 pl-10">Progress</div>
       </div>
 
-      {filteredExams().map((exam) => {
+      {(planName === "Free Plan" ? fakeExams : filteredExams()).map((exam) => {
         const correctPercentage = (exam.correct / exam.totalQuestions) * 100;
         const incorrectPercentage = (exam.incorrect / exam.totalQuestions) * 100;
         const unansweredPercentage = 100 - correctPercentage - incorrectPercentage;
-        
+
         return (
           <div key={exam.id} className="flex border-b items-center px-4 py-2 bg-white cursor-pointer"
                onClick={() => toggleSelectExam(exam.id)}>

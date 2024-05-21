@@ -11,7 +11,7 @@ import profilePic2 from "./profilepic2.webp";
 import profilePic3 from "./profilepic3.webp";
 
 const EditProfile = ({ onClose }) => {
-  const { currentUser, name, SetName, profilePictureIndex, setProfilePictureIndex } = useAuth();
+  const { currentUser, name, SetName, profilePictureIndex, updateProfilePictureIndex } = useAuth();
   const [inputName, setInputName] = useState(name);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -39,7 +39,7 @@ const EditProfile = ({ onClose }) => {
           profilePicture: selectedPicIndex 
         });
         SetName(inputName);
-        setProfilePictureIndex(selectedPicIndex);
+        updateProfilePictureIndex(selectedPicIndex);
         onClose();
       } catch (error) {
         console.error("Failed to update profile:", error);

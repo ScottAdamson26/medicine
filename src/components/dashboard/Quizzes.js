@@ -1,18 +1,34 @@
 import React, { useState } from "react";
 import Checkbox from "./Checkbox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleUp, faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleUp,
+  faAngleDown,
+  faAngleRight,
+} from "@fortawesome/free-solid-svg-icons";
+import { useAuth } from "../../AuthContext";
 
 const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
+  const { planName } = useAuth();
   const [selectedQuizzes, setSelectedQuizzes] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("All"); // New state for tracking the selected filter
 
+  const isFreePlan = planName === "Free Plan";
+
   const toggleSelectAll = (isChecked) => {
-    if (isChecked) {
-      setSelectedQuizzes(topics.map((topic) => topic.id));
+    if (isFreePlan) {
+      if (isChecked) {
+        setSelectedQuizzes(["trial"]);
+      } else {
+        setSelectedQuizzes([]);
+      }
     } else {
-      setSelectedQuizzes([]);
+      if (isChecked) {
+        setSelectedQuizzes(topics.map((topic) => topic.id));
+      } else {
+        setSelectedQuizzes([]);
+      }
     }
   };
 
@@ -28,7 +44,9 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
     }
   };
 
-  const isAllSelected = selectedQuizzes.length === topics.length;
+  const isAllSelected = isFreePlan
+    ? selectedQuizzes.includes("trial")
+    : selectedQuizzes.length === topics.length;
 
   const handleFilterChange = (filter) => {
     setCurrentFilter(filter);
@@ -49,12 +67,19 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
     switch (currentFilter) {
       case "Uncompleted":
         return topics.filter(
-          (topic) => topic.totalQuestions - topic.correct - (topic.attempts - topic.correct) > 0
+          (topic) =>
+            topic.totalQuestions -
+              topic.correct -
+              (topic.attempts - topic.correct) >
+            0,
         );
       case "Completed":
         return topics.filter(
           (topic) =>
-            topic.totalQuestions - topic.correct - (topic.attempts - topic.correct) === 0
+            topic.totalQuestions -
+              topic.correct -
+              (topic.attempts - topic.correct) ===
+            0,
         );
       default:
         return topics; // Default or 'All' filter
@@ -64,59 +89,74 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   // Function to determine button style
   const buttonStyle = (filter) => {
     return `px-2 py-1 m-1 ${
-      currentFilter === filter ? "bg-cyan-100 text-cyan-500" : "bg-gray-100 text-zinc-400"
+      currentFilter === filter
+        ? "bg-cyan-100 text-cyan-500"
+        : "bg-gray-100 text-zinc-400"
     } rounded-md text-xs`;
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg  w-full overflow-auto mb-0 xl:mb-0 z-10">
-      <div className="px-4 pt-4 flex-1 flex justify-between flex-row items-start md:items-center">
-        <div className="flex flex-col md:flex-row items-start md:items-center">
+    <div className="z-10 mb-0 w-full overflow-auto rounded-lg bg-white shadow-lg xl:mb-0">
+      <div className="flex flex-1 flex-row items-start justify-between px-4 pt-4 md:items-center">
+        <div className="flex flex-col items-start md:flex-row md:items-center">
           <h2 className="text-xl">Quiz Topics</h2>
           {selectedQuizzes.length > 0 && (
             <div
-              className="flex flex-row items-center cursor-pointer text-sm mt-1 md:mt-0"
+              className="mt-1 flex cursor-pointer flex-row items-center text-sm md:mt-0"
               onClick={() => {
-                setShowQuiz(true);
-                setCurrentTopicIds(selectedQuizzes); // Pass the selected topic IDs
+                if (selectedQuizzes.includes("trial")) {
+                  // Do nothing for now
+                } else {
+                  setShowQuiz(true);
+                  setCurrentTopicIds(selectedQuizzes); // Pass the selected topic IDs
+                }
               }}
             >
-              <h3 className="p-0 md:pl-4 text-cyan-500 hidden md:block">
+              <h3 className="hidden p-0 text-cyan-500 md:block md:pl-4">
                 Start {getTotalQuestions()} questions
               </h3>
               <FontAwesomeIcon
                 icon={faAngleRight}
-                className="text-cyan-500 text-base ml-1 hidden md:block"
+                className="ml-1 hidden text-base text-cyan-500 md:block"
               />
             </div>
           )}
         </div>
         <div className="font-regular flex flex-row items-end">
-          <button className={buttonStyle("All")} onClick={() => handleFilterChange("All")}>
+          <button
+            className={buttonStyle("All")}
+            onClick={() => handleFilterChange("All")}
+          >
             All
           </button>
-          <button className={buttonStyle("Uncompleted")} onClick={() => handleFilterChange("Uncompleted")}>
+          <button
+            className={buttonStyle("Uncompleted")}
+            onClick={() => handleFilterChange("Uncompleted")}
+          >
             Uncompleted
           </button>
-          <button className={buttonStyle("Completed")} onClick={() => handleFilterChange("Completed")}>
+          <button
+            className={buttonStyle("Completed")}
+            onClick={() => handleFilterChange("Completed")}
+          >
             Completed
           </button>
         </div>
       </div>
       {selectedQuizzes.length > 0 && (
-        <div className="flex flex-row items-center md:hidden text-sm px-4 pb-2">
+        <div className="flex flex-row items-center px-4 pb-2 text-sm md:hidden">
           <h3 className="p-0 text-cyan-500">
             Start {getTotalQuestions()} questions
           </h3>
           <FontAwesomeIcon
             icon={faAngleRight}
-            className="text-cyan-500 text-base ml-1"
+            className="ml-1 text-base text-cyan-500"
           />
         </div>
       )}
       {/* header row */}
       <div
-        className="flex border-b text-xs font-medium flex-row items-center px-4 py-2 text-zinc-400 cursor-pointer"
+        className="flex cursor-pointer flex-row items-center border-b px-4 py-2 text-xs font-medium text-zinc-400"
         onClick={() => toggleSelectAll(!isAllSelected)} // This line added to make the entire row clickable
       >
         <Checkbox
@@ -129,6 +169,28 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
         <div className="w-5/12 pl-2">Topics</div>
         <div className="w-6/12 pl-10">Progress</div>
       </div>
+
+      {isFreePlan && (
+        <div
+          key="trial"
+          className="flex cursor-pointer items-center border-b bg-white px-4 py-2"
+          onClick={() => toggleSelectQuiz("trial")}
+        >
+          <Checkbox
+            checked={selectedQuizzes.includes("trial")}
+            onChange={(e) => {
+              e.stopPropagation();
+              toggleSelectQuiz("trial");
+            }}
+          />
+          <div className="w-5/12 pl-2 text-sm font-semibold ">
+            Trial Questions
+          </div>
+          <div className="flex w-6/12 items-center pl-10">
+            <div className="m-0.5 h-1.5 w-full rounded-md bg-gray-300"></div>
+          </div>
+        </div>
+      )}
 
       {filteredTopics()
         .slice(0, isTruncated && !isExpanded ? 8 : filteredTopics().length)
@@ -145,8 +207,12 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
           return (
             <div
               key={topic.id}
-              className="flex border-b items-center px-4 py-2 bg-white cursor-pointer"
-              onClick={() => toggleSelectQuiz(topic.id)}
+              className={`flex items-center border-b px-4 py-2 ${
+                isFreePlan
+                  ? "cursor-not-allowed bg-gray-50 text-gray-400"
+                  : "cursor-pointer bg-white"
+              }`}
+              onClick={!isFreePlan ? () => toggleSelectQuiz(topic.id) : null}
             >
               <Checkbox
                 checked={selectedQuizzes.includes(topic.id)}
@@ -154,27 +220,32 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
                   e.stopPropagation();
                   toggleSelectQuiz(topic.id);
                 }}
+                disabled={isFreePlan}
               />
-              <div className="w-5/12 pl-2 text-sm font-semibold">
+              <div
+                className={`w-5/12 pl-2 text-sm font-medium ${
+                  isFreePlan ? "font-medium " : "font-semibold"
+                }`}
+              >
                 {topic.name}
               </div>
-              <div className="w-6/12 pl-10 flex items-center">
+              <div className="flex w-6/12 items-center pl-10">
                 {correctPercentage > 0 && (
                   <div
                     style={{ width: `${correctPercentage}%` }}
-                    className="h-1.5 bg-green-400 rounded-md m-0.5"
+                    className="m-0.5 h-1.5 rounded-md bg-green-400"
                   ></div>
                 )}
                 {incorrectPercentage > 0 && (
                   <div
                     style={{ width: `${incorrectPercentage}%` }}
-                    className="h-1.5 bg-red-400 rounded-md m-0.5"
+                    className="m-0.5 h-1.5 rounded-md bg-red-400"
                   ></div>
                 )}
                 {unansweredPercentage > 0 && (
                   <div
                     style={{ width: `${unansweredPercentage}%` }}
-                    className="h-1.5 bg-gray-300 rounded-md m-0.5"
+                    className="m-0.5 h-1.5 rounded-md bg-gray-300"
                   ></div>
                 )}
               </div>
@@ -186,7 +257,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
         <div className="flex justify-center">
           <button
             onClick={handleToggleExpand}
-            className="bg-gradient-to-r from-blue-300 to-cyan-400 w-full hover:bg-gradient-to-r hover:from-blue-400 hover:to-cyan-500 text-white font-bold py-0.5 px-2 flex items-center justify-center transition-all duration-300 ease-in-out"
+            className="flex w-full items-center justify-center bg-gradient-to-r from-blue-300 to-cyan-400 px-2 py-0.5 font-bold text-white transition-all duration-300 ease-in-out hover:bg-gradient-to-r hover:from-blue-400 hover:to-cyan-500"
           >
             {isExpanded ? (
               <FontAwesomeIcon icon={faAngleUp} className="text-xl" />

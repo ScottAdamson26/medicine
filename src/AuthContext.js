@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "./firebase-config";
-import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-import { signOut } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc, collection, getDocs, updateDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -12,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [stripeId, setStripeId] = useState(null);
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
-  const [planName, setPlanName] = useState("Free Plan"); // Default to Free Plan
+  const [planName, setPlanName] = useState(null); // No default value
   const [loading, setLoading] = useState(true);
   const [name, SetName] = useState(null);
   const [profilePictureIndex, setProfilePictureIndex] = useState(0); // State for profile picture index
@@ -23,7 +22,7 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(null);
       setStripeId(null);
       setHasActiveSubscription(false);
-      setPlanName("Free Plan"); // Reset to Free Plan on logout
+      setPlanName(null); // Reset to null on logout
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -48,17 +47,15 @@ export const AuthProvider = ({ children }) => {
 
       const mostRecentSubscription = subscriptions[0];
       let activeSubscription = false;
-      let currentPlanName = "Free Plan";
+      let currentPlanName = null; // Default to null
 
-      console.log("here is the most recenet sub " + mostRecentSubscription);
       if (mostRecentSubscription && mostRecentSubscription.status === "active") {
         const itemName = mostRecentSubscription.items && mostRecentSubscription.items.length > 0 
                           ? mostRecentSubscription.items[0].price.product.name 
-                          : "Free Plan";
+                          : null;
 
         currentPlanName = itemName;
         activeSubscription = true;
-        console.log("here it is fam " + mostRecentSubscription.items[0].price.product )
       }
 
       setCurrentUser(user);
@@ -70,11 +67,22 @@ export const AuthProvider = ({ children }) => {
 
       return { ...data, hasActiveSubscription: activeSubscription, planName: currentPlanName };
     } else {
-      console.log("No user data found");
       setCurrentUser(user);
       setHasActiveSubscription(false);
-      setPlanName("Free Plan");
+      setPlanName(null); // Set to null if no user data
       return null;
+    }
+  };
+
+  const updateProfilePictureIndex = async (index) => {
+    if (currentUser) {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, { profilePicture: index });
+        setProfilePictureIndex(index);
+      } catch (error) {
+        console.error("Failed to update profile picture:", error);
+      }
     }
   };
 
@@ -87,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         setCurrentUser(null);
         setStripeId(null);
         setHasActiveSubscription(false);
-        setPlanName("Free Plan");
+        setPlanName(null); // Reset to null if no user
       }
       setLoading(false);
     });
@@ -110,7 +118,8 @@ export const AuthProvider = ({ children }) => {
       name,
       SetName,
       profilePictureIndex,
-      setProfilePictureIndex // Ensure this is provided
+      setProfilePictureIndex,
+      updateProfilePictureIndex // New function to update profile picture index
     }}>
       {children}
     </AuthContext.Provider>
