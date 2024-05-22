@@ -128,7 +128,7 @@ const Dashboard = () => {
 
       fetchExams();
     }
-  }, [currentUser, hasActiveSubscription]);
+  }, [currentUser, hasActiveSubscription, planName]);
 
   const handleNavChange = (newNav) => {
     setSelectedNav(newNav);
