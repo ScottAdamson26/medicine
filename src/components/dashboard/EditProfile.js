@@ -11,7 +11,13 @@ import profilePic2 from "./profilepic2.webp";
 import profilePic3 from "./profilepic3.webp";
 
 const EditProfile = ({ onClose }) => {
-  const { currentUser, name, SetName, profilePictureIndex, updateProfilePictureIndex } = useAuth();
+  const {
+    currentUser,
+    name,
+    SetName,
+    profilePictureIndex,
+    updateProfilePictureIndex,
+  } = useAuth();
   const [inputName, setInputName] = useState(name);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -34,9 +40,9 @@ const EditProfile = ({ onClose }) => {
       setError("");
       try {
         const userRef = doc(db, "users", currentUser.uid);
-        await updateDoc(userRef, { 
-          name: inputName, 
-          profilePicture: selectedPicIndex 
+        await updateDoc(userRef, {
+          name: inputName,
+          profilePicture: selectedPicIndex,
         });
         SetName(inputName);
         updateProfilePictureIndex(selectedPicIndex);
@@ -58,41 +64,57 @@ const EditProfile = ({ onClose }) => {
     autoplay: true,
     animationData: spinnerAnimation,
     rendererSettings: {
-      preserveAspectRatio: 'xMidYMid slice'
-    }
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-75 flex justify-center items-center">
-      <div className="bg-gradient-to-r from-purple-200 to-fuchsia-300 p-1 rounded-xl shadow-xl relative m-3">
-        <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col">
-          <button onClick={onClose} className="absolute top-2 left-3 text-gray-300 text-lg hover:text-gray-500 transition-colors duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+      <div className="relative m-3 rounded-xl bg-gradient-to-r from-purple-200 to-fuchsia-300 p-1 shadow-xl min-w-96">
+        <div className="flex flex-col rounded-lg bg-white p-8 shadow-lg">
+          <button
+            onClick={onClose}
+            className="absolute left-3 top-2 text-lg text-gray-300 transition-colors duration-200 hover:text-gray-500"
+          >
             <FontAwesomeIcon icon={faXmark} />
           </button>
           <div className="max-w-xs">
+          <h1 className="text-xl font-bold">Profile</h1>
+          <h2 className="opacity-30 font-semibold text-base"> Make changes to your profile </h2>
             <h1 className="text-xl font-bold">Name</h1>
             <input
               type="text"
               value={inputName}
               onChange={handleInputChange}
-              className="w-full px-3 py-1 font-medium text-lg bg-gray-50 rounded-md mt-2 border-2 border-purple-200 focus:border-purple-200 focus:outline-none focus:ring-0"
+              className="mt-2 w-full rounded-md border-2 border-purple-200 bg-gray-50 px-3 py-1 text-lg font-medium focus:border-purple-200 focus:outline-none focus:ring-0"
             />
-            {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
-            <h1 className="text-xl font-bold mt-6">Profile Picture</h1>
-            <div className="flex mt-2 justify-center space-x-4">
+            {error && <div className="mt-1 text-xs text-red-500">{error}</div>}
+            <h1 className="mt-6 text-xl font-bold">Profile Picture</h1>
+            <div className="mt-2 flex justify-center space-x-4">
               {profilePics.map((pic, index) => (
-                <div key={index} className={`cursor-pointer rounded-full border-4 ${selectedPicIndex === index ? 'border-purple-400' : 'border-transparent'}`}
-                  onClick={() => handlePicSelect(index)}>
-                  <img src={pic} alt={`Profile Pic ${index + 1}`} className="w-16 h-16 rounded-full"/>
+                <div
+                  key={index}
+                  className={`cursor-pointer rounded-full border-4 ${selectedPicIndex === index ? "border-purple-400" : "border-transparent"}`}
+                  onClick={() => handlePicSelect(index)}
+                >
+                  <img
+                    src={pic}
+                    alt={`Profile Pic ${index + 1}`}
+                    className="h-16 w-16 rounded-full"
+                  />
                 </div>
               ))}
             </div>
             <button
               onClick={handleSave}
-              className="mt-4 bg-gradient-to-r from-purple-300 to-fuchsia-300 w-full text-white font-bold py-1 text-md px-4 rounded transition-all duration-300 ease-in-out hover:from-purple-400 hover:to-fuchsia-400"
+              className="text-md mt-4 w-full rounded bg-gradient-to-r from-purple-300 to-fuchsia-300 px-4 py-1 font-bold text-white transition-all duration-300 ease-in-out hover:from-purple-400 hover:to-fuchsia-400"
               disabled={isSaving || !inputName}
             >
-              {isSaving ? <Lottie options={defaultOptions} height={30} width={30} /> : 'Save'}
+              {isSaving ? (
+                <Lottie options={defaultOptions} height={30} width={30} />
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
         </div>

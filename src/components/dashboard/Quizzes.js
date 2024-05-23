@@ -209,7 +209,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
               key={topic.id}
               className={`flex items-center border-b px-4 py-2 ${
                 isFreePlan
-                  ? "cursor-not-allowed bg-gray-50 text-gray-400"
+                  ? "cursor-pointer bg-gray-50 text-gray-400"
                   : "cursor-pointer bg-white"
               }`}
               onClick={!isFreePlan ? () => toggleSelectQuiz(topic.id) : null}

@@ -10,6 +10,7 @@ import Register from './components/register/Register';
 import Pricing from './components/register/Pricing';
 import SignIn from './components/register/SignIn';
 import Dashboard from './components/dashboard/dashboard';
+import DeleteSuccess from './components/dashboard/DeleteSuccess';
 import CheckoutForm from './components/register/CheckoutForm';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -41,6 +42,8 @@ function AppInner() {
         <Route path="/home" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
         <Route path="/subscription-success" element={<SubscriptionSuccess/>}/>
+        <Route path="/account-deleted" element={<DeleteSuccess/>}/>
+
       </Routes>
     </div>
   );
