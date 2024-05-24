@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Checkbox from "./Checkbox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleUp,
-  faAngleDown,
-  faAngleRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleUp, faAngleDown, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../AuthContext";
 
 const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   const { planName } = useAuth();
   const [selectedQuizzes, setSelectedQuizzes] = useState([]);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentFilter, setCurrentFilter] = useState("All"); // New state for tracking the selected filter
+  const [currentFilter, setCurrentFilter] = useState("All");
 
   const isFreePlan = planName === "Free Plan";
+
+  useEffect(() => {
+    if (isFreePlan) {
+      setSelectedQuizzes([]);
+    }
+    // Log all rows of data in "topics" to the console
+    console.log("Topics data:");
+    topics.forEach((topic, index) => {
+      console.log(`Topic ${index + 1}:`, topic);
+    });
+  }, [isFreePlan, topics]);
 
   const toggleSelectAll = (isChecked) => {
     if (isFreePlan) {
@@ -55,7 +62,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   const getTotalQuestions = () => {
     const total = filteredTopics().reduce((acc, topic) => {
       if (selectedQuizzes.includes(topic.id)) {
-        return acc + topic.totalQuestions; // Ensure topic has 'totalQuestions' field
+        return acc + parseInt(topic.totalQuestions, 10); // Ensure topic has 'totalQuestions' field
       }
       return acc;
     }, 0);
@@ -64,29 +71,38 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
   };
 
   const filteredTopics = () => {
+    let filtered = topics;
+
     switch (currentFilter) {
       case "Uncompleted":
-        return topics.filter(
+        filtered = filtered.filter(
           (topic) =>
             topic.totalQuestions -
-              topic.correct -
-              (topic.attempts - topic.correct) >
-            0,
+            topic.correct -
+            (topic.attempts - topic.correct) >
+            0
         );
+        break;
       case "Completed":
-        return topics.filter(
+        filtered = filtered.filter(
           (topic) =>
             topic.totalQuestions -
-              topic.correct -
-              (topic.attempts - topic.correct) ===
-            0,
+            topic.correct -
+            (topic.attempts - topic.correct) ===
+            0
         );
+        break;
       default:
-        return topics; // Default or 'All' filter
+        break;
     }
+
+    if (isFreePlan) {
+      return [{ id: "trial", name: "Trial Questions", totalQuestions: "20", correct: 0, attempts: 0 }, ...filtered];
+    }
+
+    return filtered.filter((topic) => topic.name !== "Trial Questions");
   };
 
-  // Function to determine button style
   const buttonStyle = (filter) => {
     return `px-2 py-1 m-1 ${
       currentFilter === filter
@@ -104,12 +120,8 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
             <div
               className="mt-1 flex cursor-pointer flex-row items-center text-sm md:mt-0"
               onClick={() => {
-                if (selectedQuizzes.includes("trial")) {
-                  // Do nothing for now
-                } else {
-                  setShowQuiz(true);
-                  setCurrentTopicIds(selectedQuizzes); // Pass the selected topic IDs
-                }
+                setShowQuiz(true);
+                setCurrentTopicIds(selectedQuizzes);
               }}
             >
               <h3 className="hidden p-0 text-cyan-500 md:block md:pl-4">
@@ -154,43 +166,20 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
           />
         </div>
       )}
-      {/* header row */}
       <div
         className="flex cursor-pointer flex-row items-center border-b px-4 py-2 text-xs font-medium text-zinc-400"
-        onClick={() => toggleSelectAll(!isAllSelected)} // This line added to make the entire row clickable
+        onClick={() => toggleSelectAll(!isAllSelected)}
       >
         <Checkbox
           checked={isAllSelected}
           onChange={(e) => {
-            e.stopPropagation(); // This prevents the row click event when checkbox is specifically clicked
+            e.stopPropagation();
             toggleSelectAll(!isAllSelected);
           }}
         />
         <div className="w-5/12 pl-2">Topics</div>
         <div className="w-6/12 pl-10">Progress</div>
       </div>
-
-      {isFreePlan && (
-        <div
-          key="trial"
-          className="flex cursor-pointer items-center border-b bg-white px-4 py-2"
-          onClick={() => toggleSelectQuiz("trial")}
-        >
-          <Checkbox
-            checked={selectedQuizzes.includes("trial")}
-            onChange={(e) => {
-              e.stopPropagation();
-              toggleSelectQuiz("trial");
-            }}
-          />
-          <div className="w-5/12 pl-2 text-sm font-semibold ">
-            Trial Questions
-          </div>
-          <div className="flex w-6/12 items-center pl-10">
-            <div className="m-0.5 h-1.5 w-full rounded-md bg-gray-300"></div>
-          </div>
-        </div>
-      )}
 
       {filteredTopics()
         .slice(0, isTruncated && !isExpanded ? 8 : filteredTopics().length)
@@ -208,11 +197,15 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
             <div
               key={topic.id}
               className={`flex items-center border-b px-4 py-2 ${
-                isFreePlan
-                  ? "cursor-pointer bg-gray-50 text-gray-400"
+                isFreePlan && topic.id !== "trial"
+                  ? "cursor-not-allowed bg-gray-50 text-gray-400"
                   : "cursor-pointer bg-white"
               }`}
-              onClick={!isFreePlan ? () => toggleSelectQuiz(topic.id) : null}
+              onClick={
+                !isFreePlan || topic.id === "trial"
+                  ? () => toggleSelectQuiz(topic.id)
+                  : null
+              }
             >
               <Checkbox
                 checked={selectedQuizzes.includes(topic.id)}
@@ -220,11 +213,13 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
                   e.stopPropagation();
                   toggleSelectQuiz(topic.id);
                 }}
-                disabled={isFreePlan}
+                disabled={isFreePlan && topic.id !== "trial"}
               />
               <div
                 className={`w-5/12 pl-2 text-sm font-medium ${
-                  isFreePlan ? "font-medium " : "font-semibold"
+                  isFreePlan && topic.id !== "trial"
+                    ? "font-medium "
+                    : "font-semibold"
                 }`}
               >
                 {topic.name}
