@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../AuthContext";
 import MockExams from "./MockExams";
 import Quiz from "./Quiz";
+import Alert from "./Alert";
 
 const Dashboard = () => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
@@ -197,6 +198,7 @@ const Dashboard = () => {
             )}
             {selectedNav === "Profile" && !showQuiz && (
               <>
+                <Alert />
                 <Profile topics={topicProgress} name={userName} />
                 <Upgrade />
               </>
@@ -213,6 +215,7 @@ const Dashboard = () => {
             <Timer />
             {!(selectedNav === "Profile") && (
               <>
+                <Alert />
                 <Profile topics={topicProgress} name={userName} />
                 <Upgrade setSelectedNav={setSelectedNav} />
               </>

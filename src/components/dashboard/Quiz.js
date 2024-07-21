@@ -14,8 +14,14 @@ import { db } from "../../firebase-config";
 import { useAuth } from "../../AuthContext";
 import spinnerAnimation from "./spinner.json";
 import Lottie from "react-lottie";
+import EndQuizModal from "./EndQuiz"; // Import the EndQuizModal component
 
-const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopics }) => {
+const Quiz = ({
+  currentTopicIds,
+  setShowQuiz,
+  setSelectedNav,
+  toggleRefreshTopics,
+}) => {
   const { currentUser } = useAuth(); // This fetches the current user from the AuthContext
   const [questions, setQuestions] = useState([]); // Array of questions
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0); // Index of the current question
@@ -26,19 +32,25 @@ const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopic
   const [totalQuestions, setTotalQuestions] = useState(0);
   const [initialAttemptedQuestions, setInitialAttemptedQuestions] = useState(0); // Track initial attempted questions
   const [batchCount, setBatchCount] = useState(0); // Track the batch count
+  const [isEndQuizModalOpen, setIsEndQuizModalOpen] = useState(false); // State for managing the end quiz modal visibility
 
   useEffect(() => {
     const fetchQuestions = async (additional = false) => {
       if (currentTopicIds.length > 0 && currentUser) {
         const userProgressRef = doc(db, "userProgress", currentUser.uid);
 
-        // Fetch answered questions
-        const answeredQuestionsRef = collection(
-          userProgressRef,
-          "answeredQuestions"
-        );
-        const answeredSnapshot = await getDocs(answeredQuestionsRef);
-        let answeredQuestionIds = answeredSnapshot.docs.map((doc) => doc.id);
+        // Fetch answered questions, handling cases where the userProgress document might not exist
+        let answeredQuestionIds = [];
+        try {
+          const answeredQuestionsRef = collection(
+            userProgressRef,
+            "answeredQuestions"
+          );
+          const answeredSnapshot = await getDocs(answeredQuestionsRef);
+          answeredQuestionIds = answeredSnapshot.docs.map((doc) => doc.id);
+        } catch (error) {
+          console.log("No answered questions found for this user.");
+        }
 
         const questionsRef = collection(db, "questions");
 
@@ -51,8 +63,16 @@ const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopic
             totalQuestionsCount += topicDoc.data().numQuestions;
           }
 
-          const userProgressSnapshot = await getDoc(userProgressRef);
-          const topicProgress = userProgressSnapshot.data().topicProgress || [];
+          let topicProgress = [];
+          try {
+            const userProgressSnapshot = await getDoc(userProgressRef);
+            if (userProgressSnapshot.exists()) {
+              topicProgress = userProgressSnapshot.data().topicProgress || [];
+            }
+          } catch (error) {
+            console.log("No user progress document found.");
+          }
+
           const topicData = topicProgress.find((tp) => tp.topicId === id);
           if (topicData) {
             totalAttemptedCount += topicData.attempts;
@@ -259,10 +279,19 @@ const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopic
     updateUserProgress(currentQuestion.id, wasCorrect, currentQuestion.topicId);
   };
 
+  const confirmEndQuiz = (setStatus) => {
+    setStatus("loading");
+    setTimeout(() => {
+      setStatus(null);
+      setIsEndQuizModalOpen(false);
+      setShowQuiz(false); // End the quiz
+      setSelectedNav("Dashboard");
+      toggleRefreshTopics(); // Call the function to refresh the topics
+    }, 1000);
+  };
+
   const handleEndQuiz = () => {
-    setShowQuiz(false);
-    toggleRefreshTopics(); // Call the function to refresh the topics
-    setSelectedNav("Dashboard");
+    setIsEndQuizModalOpen(true); // Open the end quiz modal
   };
 
   if (!questions.length) {
@@ -351,6 +380,12 @@ const Quiz = ({ currentTopicIds, setShowQuiz, setSelectedNav, toggleRefreshTopic
           End Quiz
         </button>
       </div>
+
+      <EndQuizModal
+        isOpen={isEndQuizModalOpen}
+        onClose={() => setIsEndQuizModalOpen(false)}
+        onConfirm={confirmEndQuiz}
+      />
     </div>
   );
 };

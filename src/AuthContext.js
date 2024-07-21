@@ -13,8 +13,9 @@ export const AuthProvider = ({ children }) => {
   const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
   const [planName, setPlanName] = useState(null); // No default value
   const [loading, setLoading] = useState(true);
-  const [name, SetName] = useState(null);
+  const [name, setName] = useState(null);
   const [profilePictureIndex, setProfilePictureIndex] = useState(0); // State for profile picture index
+  const [emailVerified, setEmailVerified] = useState(false); // New state variable
 
   const logout = async () => {
     try {
@@ -62,14 +63,16 @@ export const AuthProvider = ({ children }) => {
       setStripeId(data.stripeId || null);
       setHasActiveSubscription(activeSubscription);
       setPlanName(currentPlanName);
-      SetName(data.name || null);
+      setName(data.name || null);
       setProfilePictureIndex(data.profilePicture !== undefined ? data.profilePicture : 0);
+      setEmailVerified(data.verified || false); // Set emailVerified
 
-      return { ...data, hasActiveSubscription: activeSubscription, planName: currentPlanName };
+      return { ...data, hasActiveSubscription: activeSubscription, planName: currentPlanName, emailVerified: data.verified || false };
     } else {
       setCurrentUser(user);
       setHasActiveSubscription(false);
       setPlanName(null); // Set to null if no user data
+      setEmailVerified(false); // Set to false if no user data
       return null;
     }
   };
@@ -96,6 +99,7 @@ export const AuthProvider = ({ children }) => {
         setStripeId(null);
         setHasActiveSubscription(false);
         setPlanName(null); // Reset to null if no user
+        setEmailVerified(false); // Reset to false if no user
       }
       setLoading(false);
     });
@@ -116,10 +120,11 @@ export const AuthProvider = ({ children }) => {
       fetchUserData,
       logout,
       name,
-      SetName,
+      setName,
       profilePictureIndex,
       setProfilePictureIndex,
-      updateProfilePictureIndex // New function to update profile picture index
+      updateProfilePictureIndex,
+      emailVerified // Provide emailVerified in the context
     }}>
       {children}
     </AuthContext.Provider>

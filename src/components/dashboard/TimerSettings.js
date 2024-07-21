@@ -52,7 +52,7 @@ const TimerSettings = ({ onClose, updateSettings }) => {
                 className={`text-sm py-1 px-4 rounded-full transition-colors duration-300 ease-in-out 
                   ${
                     selectedDuration === duration
-                      ? "bg-gradient-to-r from-purple-200 to-fuchsia-300 text-white"
+                      ? "bg-gradient-to-r from-purple-300 to-fuchsia-300 text-white"
                       : "bg-white text-purple-700 border border-purple-200 hover:bg-purple-50"
                   }`}
               >
@@ -70,7 +70,7 @@ const TimerSettings = ({ onClose, updateSettings }) => {
                 className={`text-sm py-1 px-4 rounded-full transition-colors duration-300 ease-in-out 
                   ${
                     selectedBreakDuration === duration
-                      ? "bg-gradient-to-r from-purple-200 to-fuchsia-300 text-white"
+                      ? "bg-gradient-to-r from-purple-300 to-fuchsia-300 text-white"
                       : "bg-white text-purple-700 border border-purple-200 hover:bg-purple-50"
                   }`}
               >
@@ -88,7 +88,7 @@ const TimerSettings = ({ onClose, updateSettings }) => {
                 className={`text-sm py-1 px-4 rounded-full transition-colors duration-300 ease-in-out 
                   ${
                     selectedSessionCount === count
-                      ? "bg-gradient-to-r from-purple-200 to-fuchsia-300 text-white"
+                      ? "bg-gradient-to-r from-purple-300 to-fuchsia-300 text-white"
                       : "bg-white text-purple-700 border border-purple-200 hover:bg-purple-50"
                   }`}
               >

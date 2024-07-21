@@ -24,7 +24,7 @@ function LandingNavBar() {
     <div className={`fixed px-2 lg:px-0 py-3 w-full top-0 left-0 right-0 z-50`}>
       <nav
         className={`text-white py-1 md:py-2 w-full rounded-full mx-auto max-w-6xl  ${
-          isScrolled ? "shadow-lg bg-white" : ""
+          isScrolled ? "shadow-lg bg-white bg-opacity-80 backdrop-blur" : ""
         }`}
       >
         <div className="mx-auto flex justify-between items-center px-5 text-cyan-400 py-1">

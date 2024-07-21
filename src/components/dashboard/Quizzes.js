@@ -113,9 +113,9 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
 
   return (
     <div className="z-10 mb-0 w-full overflow-auto rounded-lg bg-white shadow-lg xl:mb-0">
-      <div className="flex flex-1 flex-row items-start justify-between px-4 pt-4 md:items-center">
+      <div className="flex flex-1 flex-row items-start justify-between px-4 pt-4 md:items-center mt-1 mb-2">
         <div className="flex flex-col items-start md:flex-row md:items-center">
-          <h2 className="text-xl">Quiz Topics</h2>
+          <h2 className="text-xl">Topics</h2>
           {selectedQuizzes.length > 0 && (
             <div
               className="mt-1 flex cursor-pointer flex-row items-center text-sm md:mt-0"
@@ -145,7 +145,7 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
             className={buttonStyle("Uncompleted")}
             onClick={() => handleFilterChange("Uncompleted")}
           >
-            Uncompleted
+            Incomplete
           </button>
           <button
             className={buttonStyle("Completed")}
@@ -156,7 +156,13 @@ const Quizzes = ({ topics, isTruncated, setShowQuiz, setCurrentTopicIds }) => {
         </div>
       </div>
       {selectedQuizzes.length > 0 && (
-        <div className="flex flex-row items-center px-4 pb-2 text-sm md:hidden">
+        <div
+          className="flex flex-row items-center px-4 pb-2 text-sm md:hidden cursor-pointer"
+          onClick={() => {
+            setShowQuiz(true);
+            setCurrentTopicIds(selectedQuizzes);
+          }}
+        >
           <h3 className="p-0 text-cyan-500">
             Start {getTotalQuestions()} questions
           </h3>

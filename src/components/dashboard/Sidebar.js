@@ -13,7 +13,7 @@ const Sidebar = ({ selectedNav, onNavChange }) => {
 
   return (
     <div className="sticky hidden md:block top-0 h-screen p-8 z-10">
-      <div className="flex flex-col w-60 h-full rounded-2xl bg-white sticky top-0 md:top-8 overflow-auto shadow-lg">
+      <div className="flex flex-col w-52 lg:w-60 h-full rounded-2xl bg-white sticky top-0 md:top-8 overflow-auto shadow-lg">
         <div className="flex flex-col flex-grow">
           <div className="font-bold py-16 text-cyan-400 flex flex-col items-center">
             <div className="mb-2 bg rounded-lg ">

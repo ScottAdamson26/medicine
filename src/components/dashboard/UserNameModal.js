@@ -11,7 +11,7 @@ const UserNameModal = ({ user, onClose }) => {
   const [selectedPicIndex, setSelectedPicIndex] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { SetName: updateContextName, updateProfilePictureIndex } = useAuth();
+  const { setName: updateContextName, updateProfilePictureIndex } = useAuth();
 
   const profilePics = [profilePic1, profilePic2, profilePic3];
 
@@ -54,7 +54,7 @@ const UserNameModal = ({ user, onClose }) => {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mb-4 w-full rounded border px-4 py-2 outline-none focus:border-cyan-400"
+              className="mb-4 w-full rounded font-medium text-gray-500 border px-4 py-2 outline-none border-cyan-300 focus:border-cyan-400"
               placeholder="Your name"
               required
             />
