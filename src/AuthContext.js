@@ -34,31 +34,46 @@ export const AuthProvider = ({ children }) => {
     const userDoc = await getDoc(userRef);
     if (userDoc.exists()) {
       const data = userDoc.data();
-
+  
+      // Fetch all subscriptions for the user
       const subscriptionsRef = collection(db, `users/${user.uid}/subscriptions`);
       const subscriptionSnapshot = await getDocs(subscriptionsRef);
       const subscriptions = [];
-
+  
+      // Add subscription data to the array
       subscriptionSnapshot.forEach(doc => {
         const subData = doc.data();
         subscriptions.push(subData);
       });
-
-      subscriptions.sort((a, b) => b.created - a.created);
-
-      const mostRecentSubscription = subscriptions[0];
+  
+      // Log all subscription data
+      console.log("All subscriptions:", subscriptions);
+  
+      // Filter active subscriptions and sort by creation date, descending
+      const activeSubscriptions = subscriptions
+        .filter(sub => sub.status === "active")
+        .sort((a, b) => b.created.seconds - a.created.seconds);
+  
+      // Get the most recent active subscription
+      const mostRecentSubscription = activeSubscriptions[0];
       let activeSubscription = false;
       let currentPlanName = null; // Default to null
-
-      if (mostRecentSubscription && mostRecentSubscription.status === "active") {
+  
+      // Check if the most recent subscription is active
+      if (mostRecentSubscription) {
+        // Get the plan name from the subscription items
         const itemName = mostRecentSubscription.items && mostRecentSubscription.items.length > 0 
                           ? mostRecentSubscription.items[0].price.product.name 
                           : null;
-
+  
         currentPlanName = itemName;
         activeSubscription = true;
+  
+        // Print the record name of the subscription to the console
+        console.log("Most active subscription record name:", mostRecentSubscription.name);
       }
-
+  
+      // Update state with user and subscription information
       setCurrentUser(user);
       setStripeId(data.stripeId || null);
       setHasActiveSubscription(activeSubscription);
@@ -66,9 +81,10 @@ export const AuthProvider = ({ children }) => {
       setName(data.name || null);
       setProfilePictureIndex(data.profilePicture !== undefined ? data.profilePicture : 0);
       setEmailVerified(data.verified || false); // Set emailVerified
-
+  
       return { ...data, hasActiveSubscription: activeSubscription, planName: currentPlanName, emailVerified: data.verified || false };
     } else {
+      // No user data found
       setCurrentUser(user);
       setHasActiveSubscription(false);
       setPlanName(null); // Set to null if no user data
@@ -76,6 +92,7 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   };
+  
 
   const updateProfilePictureIndex = async (index) => {
     if (currentUser) {

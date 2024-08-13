@@ -28,7 +28,7 @@ function LandingPage2() {
         className="absolute left-0 top-0 h-screen w-full bg-white"
         style={{
           backgroundColor: "#ffffff",
-          opacity: 0.3,
+          opacity: 0.5,
           backgroundSize: "110px 110px, 110px 110px, 22px 22px, 22px 22px",
           backgroundImage:
             "linear-gradient(#f4f4f4 4.4px, transparent 4.4px), linear-gradient(90deg, #f4f4f4 4.4px, transparent 4.4px), linear-gradient(#f4f4f4 2.2px, transparent 2.2px), linear-gradient(90deg, #f4f4f4 2.2px, #ffffff 2.2px)",

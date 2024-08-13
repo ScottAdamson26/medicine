@@ -16,7 +16,7 @@ import { useAuth } from "../../AuthContext";
 import MockExams from "./MockExams";
 import Quiz from "./Quiz";
 import Alert from "./Alert";
-
+import Upload from "./Upload";
 const Dashboard = () => {
   const [selectedNav, setSelectedNav] = useState("Dashboard");
   const [topics, setTopics] = useState([]);

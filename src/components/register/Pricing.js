@@ -7,6 +7,7 @@ import Lottie from "react-lottie";
 import spinnerAnimation from "./spinner.json";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faCircle } from "@fortawesome/free-solid-svg-icons";
+import { Timestamp } from "firebase/firestore";  // Import Timestamp
 
 function Pricing() {
   const { stripeId, currentUser, loading, planName } = useAuth();
@@ -48,12 +49,8 @@ function Pricing() {
     const userId = currentUser.uid;
     const subscriptionId = `sub_${new Date().getTime()}`;
 
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleString('en-US', {
-      month: 'long', day: 'numeric', year: 'numeric',
-      hour: 'numeric', minute: 'numeric', second: 'numeric',
-      hour12: true, timeZoneName: 'short'
-    });
+    // Create a Firestore Timestamp for the current date
+    const currentDate = Timestamp.fromDate(new Date());
 
     const subscriptionData = {
       status: "active",
@@ -64,7 +61,7 @@ function Pricing() {
           }
         }
       }],
-      created: formattedDate
+      created: currentDate  // Use Firestore Timestamp
     };
 
     try {
